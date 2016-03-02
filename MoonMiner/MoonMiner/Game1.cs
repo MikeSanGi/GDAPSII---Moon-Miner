@@ -11,10 +11,21 @@ namespace MoonMiner
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        // create attributes to hold textures
         Texture2D background;
         Vector2 cavePos;
         Texture2D player;
         Vector2 playerPos;
+
+        // create an attribute to hold direction
+        string direction = "down";
+
+        // create jump variables
+        int vSpeed = 0;
+        int gravity = 0;
+        int maxHeight = 0;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -69,11 +80,13 @@ namespace MoonMiner
                 Exit();
 
             // TODO: Add your update logic here
-
             base.Update(gameTime);
+
+            // have the cave background loop to create parallax effect
             cavePos.X -= 1;
             if(cavePos.X == -960)
             {
+                // reset background position
                 cavePos.X = 0;
             }
 
@@ -104,37 +117,37 @@ namespace MoonMiner
         {
             // create a local keyboard state variable
             KeyboardState kState;
+            KeyboardState kStatePrev;
             // store the state of the keyboard in the variable
             kState = Keyboard.GetState();
 
             // if the key is "up arrow"
             if (kState.IsKeyDown(Keys.Up))
             {
-                // have the player jump
-                playerPos.Y -= 100;
+                while(playerPos.Y >= 100)
+                {
+                    // have the player jump
+                    playerPos.Y -= 100;
+                }
             }
-            if(kState.IsKeyUp(Keys.Up))
-            {
-                playerPos.Y = 300;
-                player = Content.Load<Texture2D>("boxChar");
-            }
-
             // if the key is "down arrow"
-            if (kState.IsKeyDown(Keys.Down))
+            else if (kState.IsKeyDown(Keys.Down))
             {
                 // have the player duck
                 player = Content.Load<Texture2D>("boxChar2");
-                while(playerPos.Y <= 300)
+                while (playerPos.Y <= 300)
                 {
                     playerPos.Y += 50;
                 }
             }
-            if (kState.IsKeyUp(Keys.Down))
+            // if no key is being pressed reset the box's position
+            else if (kState.IsKeyUp(Keys.Down) || kState.IsKeyUp(Keys.Up))
             {
                 playerPos.Y = 300;
                 player = Content.Load<Texture2D>("boxChar");
             }
 
+            kStatePrev = kState;
 
         }
     }
