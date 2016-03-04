@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace MMiner
+namespace MoonMiner
 {
     /// <summary>
     /// This is the main type for your game.
@@ -12,19 +12,19 @@ namespace MMiner
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D background;
+        Texture2D background;        
         Vector2 cavePos;
         Texture2D player;
         Vector2 playerPos;
         Texture2D floor;
+        Vector2 floorPos;
 
         // jump/gravity attempt
         int baseY = 300;
-        //int vsp = 2;
-        int jumpY = 1;
-        //int grav = 11;
+        float vsp = -20;        
+        float grav = 1F;       
         Boolean playerJump = false;
-        Boolean falling = false;
+        
 
         public Game1()
         {
@@ -43,6 +43,7 @@ namespace MMiner
             // TODO: Add your initialization logic here
             cavePos = new Vector2(0, 0);
             playerPos = new Vector2(100, 300);
+            floorPos = new Vector2(0, 400);
             base.Initialize();
         }
 
@@ -55,7 +56,8 @@ namespace MMiner
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             background = Content.Load<Texture2D>("Background2");
-            player = Content.Load<Texture2D>("boxChar");
+            player = Content.Load<Texture2D>("boxChar1");
+            floor = Content.Load<Texture2D>("Floor");
 
             // TODO: use this.Content to load your game content here
         }
@@ -82,10 +84,15 @@ namespace MMiner
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-            cavePos.X -= 6;
-            if (cavePos.X == -960)
+            cavePos.X -= 3;
+            if(cavePos.X == -960)
             {
                 cavePos.X = 0;
+            }
+            floorPos.X -= 3;
+            if (floorPos.X == -960)
+            {
+                floorPos.X = 0;
             }
 
             // call the process input method
@@ -102,9 +109,9 @@ namespace MMiner
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            spriteBatch.Draw(background, cavePos, Color.White);
+            spriteBatch.Draw(background,cavePos,Color.White);
             spriteBatch.Draw(player, playerPos, Color.White);
-
+            spriteBatch.Draw(floor, floorPos, Color.White);
 
             spriteBatch.End();
 
@@ -118,24 +125,21 @@ namespace MMiner
             KeyboardState kState;
             KeyboardState prevKState;
             Boolean ducking = false;
-
+            
             // store the state of the keyboard in the variable
             kState = Keyboard.GetState();
-
+        
 
             // if the key is "up arrow"
             if (kState.IsKeyDown(Keys.Up))
             {
                 // have the player jump
-                if (playerPos.Y > 300)
-                {
-                    playerPos.Y = 300;
-                }
+               // playerPos.Y = 300;
                 playerJump = true;
+                
             }
             if (playerJump == true)
             {
-                jumpY = 1;
                 Jump();
             }
             /*if(kState.IsKeyUp(Keys.Up))
@@ -147,62 +151,33 @@ namespace MMiner
             // if the key is "down arrow"
             if (kState.IsKeyDown(Keys.Down))
             {
-                //Have the player duck
-                while (playerPos.Y <= 300 && playerJump == false)
+                // have the player duck
+                player = Content.Load<Texture2D>("boxChar2");              
+                while(playerPos.Y <= 300)
                 {
-                    ducking = true;
-                    player = Content.Load<Texture2D>("boxChar2");
                     playerPos.Y += 50;
                 }
-
             }
-
-            if (kState.IsKeyUp(Keys.Down) && kState.IsKeyUp(Keys.Up) && playerJump == false)
+            /*if (kState.IsKeyUp(Keys.Down))
             {
                 playerPos.Y = 300;
-                ducking = false;
                 player = Content.Load<Texture2D>("boxChar");
-            }
-
+            }*/
             prevKState = kState;
 
         }
 
         public void Jump()
         {
-            player = Content.Load<Texture2D>("boxChar");
-            jumpY += 2;
-            playerPos.Y -= (float)(jumpY*jumpY);
-            if (playerPos.Y <= 100)
-            {
-                falling = true;
-            }
-            if (falling == true)
-            {
-                playerPos.Y += (2*(jumpY*jumpY));
-                jumpY--;
-                if(playerPos.Y > baseY)
-                {
-                    playerPos.Y = baseY;
-                }
-            }
-            if (playerPos.Y == baseY)
+
+            playerJump = true;            
+            vsp += grav;
+            playerPos.Y += vsp;           
+            if(playerPos.Y == baseY)
             {
                 playerJump = false;
-                falling = false;
-            }
-
-
-            /*vsp -= jumpspeed;
-            playerPos.Y = vsp;
-            if (playerPos.Y < 100) vsp += grav;
-            playerPos.Y = vsp;
-            if(vsp > 0 && playerJump == true)
-            {
-                playerJump = false;
-                vsp = 0;
-            }*/
-
+                vsp = -20;                
+            }                       
         }
     }
 }
