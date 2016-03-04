@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace MoonMiner
+namespace MMiner
 {
     /// <summary>
     /// This is the main type for your game.
@@ -11,20 +12,19 @@ namespace MoonMiner
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
-        // create attributes to hold textures
         Texture2D background;
         Vector2 cavePos;
         Texture2D player;
         Vector2 playerPos;
+        Texture2D floor;
 
-        // create an attribute to hold direction
-        string direction = "down";
-
-        // create jump variables
-        int vSpeed = 0;
-        int gravity = 0;
-        int maxHeight = 0;
+        // jump/gravity attempt
+        int baseY = 300;
+        //int vsp = 2;
+        int jumpY = 1;
+        //int grav = 11;
+        Boolean playerJump = false;
+        Boolean falling = false;
 
         public Game1()
         {
@@ -80,13 +80,11 @@ namespace MoonMiner
                 Exit();
 
             // TODO: Add your update logic here
-            base.Update(gameTime);
 
-            // have the cave background loop to create parallax effect
-            cavePos.X -= 1;
-            if(cavePos.X == -960)
+            base.Update(gameTime);
+            cavePos.X -= 6;
+            if (cavePos.X == -960)
             {
-                // reset background position
                 cavePos.X = 0;
             }
 
@@ -104,8 +102,9 @@ namespace MoonMiner
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            spriteBatch.Draw(background,cavePos,Color.White);
+            spriteBatch.Draw(background, cavePos, Color.White);
             spriteBatch.Draw(player, playerPos, Color.White);
+
 
             spriteBatch.End();
 
@@ -117,37 +116,92 @@ namespace MoonMiner
         {
             // create a local keyboard state variable
             KeyboardState kState;
-            KeyboardState kStatePrev;
+            KeyboardState prevKState;
+            Boolean ducking = false;
+
             // store the state of the keyboard in the variable
             kState = Keyboard.GetState();
+
 
             // if the key is "up arrow"
             if (kState.IsKeyDown(Keys.Up))
             {
-                while(playerPos.Y >= 100)
+                // have the player jump
+                if (playerPos.Y > 300)
                 {
-                    // have the player jump
-                    playerPos.Y -= 100;
+                    playerPos.Y = 300;
                 }
+                playerJump = true;
             }
-            // if the key is "down arrow"
-            else if (kState.IsKeyDown(Keys.Down))
+            if (playerJump == true)
             {
-                // have the player duck
-                player = Content.Load<Texture2D>("boxChar2");
-                while (playerPos.Y <= 300)
-                {
-                    playerPos.Y += 50;
-                }
+                jumpY = 1;
+                Jump();
             }
-            // if no key is being pressed reset the box's position
-            else if (kState.IsKeyUp(Keys.Down) || kState.IsKeyUp(Keys.Up))
+            /*if(kState.IsKeyUp(Keys.Up))
             {
                 playerPos.Y = 300;
                 player = Content.Load<Texture2D>("boxChar");
+            }*/
+
+            // if the key is "down arrow"
+            if (kState.IsKeyDown(Keys.Down))
+            {
+                //Have the player duck
+                while (playerPos.Y <= 300 && playerJump == false)
+                {
+                    ducking = true;
+                    player = Content.Load<Texture2D>("boxChar2");
+                    playerPos.Y += 50;
+                }
+
             }
 
-            kStatePrev = kState;
+            if (kState.IsKeyUp(Keys.Down) && kState.IsKeyUp(Keys.Up) && playerJump == false)
+            {
+                playerPos.Y = 300;
+                ducking = false;
+                player = Content.Load<Texture2D>("boxChar");
+            }
+
+            prevKState = kState;
+
+        }
+
+        public void Jump()
+        {
+            player = Content.Load<Texture2D>("boxChar");
+            jumpY += 2;
+            playerPos.Y -= (float)(jumpY*jumpY);
+            if (playerPos.Y <= 100)
+            {
+                falling = true;
+            }
+            if (falling == true)
+            {
+                playerPos.Y += (2*(jumpY*jumpY));
+                jumpY--;
+                if(playerPos.Y > baseY)
+                {
+                    playerPos.Y = baseY;
+                }
+            }
+            if (playerPos.Y == baseY)
+            {
+                playerJump = false;
+                falling = false;
+            }
+
+
+            /*vsp -= jumpspeed;
+            playerPos.Y = vsp;
+            if (playerPos.Y < 100) vsp += grav;
+            playerPos.Y = vsp;
+            if(vsp > 0 && playerJump == true)
+            {
+                playerJump = false;
+                vsp = 0;
+            }*/
 
         }
     }
