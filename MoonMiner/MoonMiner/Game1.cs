@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+
 using Microsoft.Xna.Framework.Input;
 
-namespace MoonMiner
+namespace Moon_Miner
 {
     /// <summary>
     /// This is the main type for your game.
@@ -12,7 +12,7 @@ namespace MoonMiner
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D background;        
+        Texture2D background;
         Vector2 cavePos;
         Texture2D player;
         Vector2 playerPos;
@@ -21,10 +21,12 @@ namespace MoonMiner
 
         // jump/gravity attempt
         int baseY = 300;
-        float vsp = -20;        
-        float grav = 1F;       
-        Boolean playerJump = false;
-        
+        float vsp = -20;
+        float grav = 1F;
+        bool playerJump = false;
+        bool falling = false;
+        bool ducking = false;
+
 
         public Game1()
         {
@@ -85,7 +87,7 @@ namespace MoonMiner
 
             base.Update(gameTime);
             cavePos.X -= 3;
-            if(cavePos.X == -960)
+            if (cavePos.X == -960)
             {
                 cavePos.X = 0;
             }
@@ -109,7 +111,7 @@ namespace MoonMiner
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            spriteBatch.Draw(background,cavePos,Color.White);
+            spriteBatch.Draw(background, cavePos, Color.White);
             spriteBatch.Draw(player, playerPos, Color.White);
             spriteBatch.Draw(floor, floorPos, Color.White);
 
@@ -124,60 +126,70 @@ namespace MoonMiner
             // create a local keyboard state variable
             KeyboardState kState;
             KeyboardState prevKState;
-            Boolean ducking = false;
-            
+         
+
             // store the state of the keyboard in the variable
             kState = Keyboard.GetState();
-        
+
 
             // if the key is "up arrow"
-            if (kState.IsKeyDown(Keys.Up))
+           if (kState.IsKeyDown(Keys.Up) && playerJump == false)
             {
                 // have the player jump
-               // playerPos.Y = 300;
+                playerPos.Y = 300;
                 playerJump = true;
-                
             }
+
             if (playerJump == true)
             {
+                player = Content.Load<Texture2D>("BoxChar1");
                 Jump();
             }
-            /*if(kState.IsKeyUp(Keys.Up))
-            {
-                playerPos.Y = 300;
-                player = Content.Load<Texture2D>("boxChar");
-            }*/
 
             // if the key is "down arrow"
-            if (kState.IsKeyDown(Keys.Down))
+            if (kState.IsKeyDown(Keys.Down) && playerJump == false)
             {
                 // have the player duck
-                player = Content.Load<Texture2D>("boxChar2");              
-                while(playerPos.Y <= 300)
+                player = Content.Load<Texture2D>("boxChar2");
+                while(playerPos.Y <= 300 && playerJump == false)
                 {
                     playerPos.Y += 50;
-                }
+                }         
             }
-            /*if (kState.IsKeyUp(Keys.Down))
+
+            //If no keys are pressed, makes sure all states are reverted to default
+            if (kState.IsKeyUp(Keys.Down) && kState.IsKeyUp(Keys.Up) && playerJump == false)
             {
                 playerPos.Y = 300;
-                player = Content.Load<Texture2D>("boxChar");
-            }*/
+                ducking = false;
+                player = Content.Load<Texture2D>("BoxChar1");
+            }
+
             prevKState = kState;
 
         }
 
         public void Jump()
         {
-
-            playerJump = true;            
+            ducking = false;
+            playerJump = true;
             vsp += grav;
-            playerPos.Y += vsp;           
-            if(playerPos.Y == baseY)
+            playerPos.Y += vsp;
+            if(playerPos.Y <= 150)
+                {
+                falling = true;
+                }
+            if (falling == true && playerPos.Y == baseY)
             {
+                falling = false;
                 playerJump = false;
-                vsp = -20;                
-            }                       
+                vsp = -20;
+            }
+            if(playerPos.Y > 300)
+            {
+                playerPos.Y = 300;
+                playerJump = false;
+            }
         }
     }
 }
