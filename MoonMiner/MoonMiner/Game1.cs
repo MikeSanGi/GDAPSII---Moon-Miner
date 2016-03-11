@@ -1,9 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-
 using Microsoft.Xna.Framework.Input;
 
-namespace Moon_Miner
+namespace MoonMiner
 {
     /// <summary>
     /// This is the main type for your game.
@@ -12,12 +11,11 @@ namespace Moon_Miner
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D background;
-        Vector2 cavePos;
+        Texture2D background;        
         Texture2D player;
         Vector2 playerPos;
-        Texture2D floor;
-        Vector2 floorPos;
+        Texture2D floorImg;
+        
 
         // jump/gravity attempt
         int baseY = 300;
@@ -26,6 +24,10 @@ namespace Moon_Miner
         bool playerJump = false;
         bool falling = false;
         bool ducking = false;
+
+        //create objects
+        FloorObjects wall;
+        FloorObjects floor;
 
 
         public Game1()
@@ -43,9 +45,14 @@ namespace Moon_Miner
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            cavePos = new Vector2(0, 0);
+        
             playerPos = new Vector2(100, 300);
-            floorPos = new Vector2(0, 400);
+          
+
+            //create floor objects
+            wall = new FloorObjects(new Vector2(0, 0));
+            floor = new FloorObjects(new Vector2(0, 400));
+
             base.Initialize();
         }
 
@@ -57,11 +64,16 @@ namespace Moon_Miner
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            background = Content.Load<Texture2D>("Background2");
-            player = Content.Load<Texture2D>("boxChar1");
-            floor = Content.Load<Texture2D>("Floor");
+
 
             // TODO: use this.Content to load your game content here
+            background = Content.Load<Texture2D>("Background2");
+            player = Content.Load<Texture2D>("boxChar1");
+            floorImg = Content.Load<Texture2D>("Floor");
+
+            //load images into floor objects
+            wall.Image = background;
+            floor.Image = floorImg;
         }
 
         /// <summary>
@@ -86,16 +98,10 @@ namespace Moon_Miner
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-            cavePos.X -= 3;
-            if (cavePos.X == -960)
-            {
-                cavePos.X = 0;
-            }
-            floorPos.X -= 3;
-            if (floorPos.X == -960)
-            {
-                floorPos.X = 0;
-            }
+            
+            //call floorobject movement
+            wall.MoveFloor();
+            floor.MoveFloor();
 
             // call the process input method
             ProcessInput();
@@ -110,10 +116,11 @@ namespace Moon_Miner
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            spriteBatch.Draw(background, cavePos, Color.White);
+            spriteBatch.Begin();                       
+            
+            wall.Draw(spriteBatch);
+            floor.Draw(spriteBatch);
             spriteBatch.Draw(player, playerPos, Color.White);
-            spriteBatch.Draw(floor, floorPos, Color.White);
 
             spriteBatch.End();
 
