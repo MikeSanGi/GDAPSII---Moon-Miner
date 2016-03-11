@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.IO;
 
 namespace MoonMiner
 {
@@ -14,7 +15,16 @@ namespace MoonMiner
         Texture2D background;        
         Texture2D player;        
         Texture2D floorImg;
-        
+        SpriteFont font;
+
+        //Creating attributes for difficulty (It's set on 'Easy' by default)
+        double scoreModifier = .5;
+        double speed = 1;
+        double score = 0;
+        double obstacleFrequency = 1;
+        bool difficultyUp = false;
+        int secondCounter;
+        //PUT CODE IN HERE FOR STREAM READER WHEN I FIGURE IT OUT TO REPLACE DEFAULT VALUES FOR THOSE VARIABLES
 
         
         //create objects
@@ -64,6 +74,7 @@ namespace MoonMiner
             background = Content.Load<Texture2D>("Background2");
             player = Content.Load<Texture2D>("boxChar1");
             floorImg = Content.Load<Texture2D>("Floor");
+            font = Content.Load<SpriteFont>("Arial");
 
             //load images into floor objects
             wall.Image = background;
@@ -99,6 +110,14 @@ namespace MoonMiner
             //call floorobject movement
             wall.MoveFloor();
             floor.MoveFloor();
+            
+            //Update score based on speed and score modifier
+            secondCounter++;
+            if (secondCounter >= 60)
+            {
+                secondCounter = 0;
+                score = score + speed * scoreModifier;
+            }
 
             // call the process input method
             ProcessInput();
@@ -118,6 +137,7 @@ namespace MoonMiner
             wall.Draw(spriteBatch);
             floor.Draw(spriteBatch);
             playChar.Draw(spriteBatch);
+            spriteBatch.DrawString(font, "Score: " + score, new Vector2(10, 10), Color.White);
 
             spriteBatch.End();
 
