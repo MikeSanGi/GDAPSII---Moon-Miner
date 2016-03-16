@@ -118,11 +118,14 @@ namespace MoonMiner
         //Draw method
         public void Draw(SpriteBatch spriteBatch)
         {
-            if(Duck == true)
+            if (Duck == false)
             {
-                spriteBatch.Draw(image, Pos, new Rectangle(CART_X_OFFSET + frame * CART_WIDTH, CART_Y, CART_WIDTH, 50), Color.White);
+                spriteBatch.Draw(image, Pos, new Rectangle(CART_X_OFFSET + frame * CART_WIDTH, CART_Y, CART_WIDTH, CART_HEIGHT), Color.White);
             }
-            spriteBatch.Draw(image, Pos, new Rectangle(CART_X_OFFSET + frame * CART_WIDTH, CART_Y, CART_WIDTH, CART_HEIGHT), Color.White);
+            else
+            {
+                spriteBatch.Draw(image, Pos, new Rectangle(CART_X_OFFSET + frame * CART_WIDTH, CART_Y, CART_WIDTH, CART_HEIGHT/2), Color.White);
+            }
         }
     }
 }
