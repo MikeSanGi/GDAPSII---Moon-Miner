@@ -8,6 +8,8 @@ namespace MoonMiner
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
+    /// 
+    enum GameState { MainMenu, HowToPlay, Game, Pause, GameOver };
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
@@ -16,6 +18,13 @@ namespace MoonMiner
         Texture2D player;        
         Texture2D floorImg;
         SpriteFont font;
+
+        // GameState variable
+        GameState currState;
+
+        // create keyboardState variables for the gameState switches
+        KeyboardState gkState;
+        KeyboardState gkStatePrev;
 
         //Creating attributes for difficulty (It's set on 'Easy' by default)
         double scoreModifier = .5;
@@ -56,6 +65,11 @@ namespace MoonMiner
             //create floor objects
             wall = new FloorObjects(new Vector2(0, 0));
             floor = new FloorObjects(new Vector2(0, 400));
+
+            // set the initial game state
+            currState = GameState.MainMenu;
+            gkState = Keyboard.GetState();
+
 
             base.Initialize();
         }
@@ -106,7 +120,7 @@ namespace MoonMiner
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-            
+            /*
             //call floorobject movement
             wall.MoveFloor();
             floor.MoveFloor();
@@ -118,9 +132,62 @@ namespace MoonMiner
                 secondCounter = 0;
                 score = score + speed * scoreModifier;
             }
+            */
 
-            // call the process input method
-            ProcessInput();
+            // create a gameState switch to detect the game State
+            switch(currState)
+            {
+                case GameState.MainMenu: if (SingleKeyPress(Keys.Enter))
+                    {
+                        // switch the state to HowToPlay
+                        currState = GameState.HowToPlay;
+                    }
+                        break;
+                case GameState.HowToPlay:
+                    if (SingleKeyPress(Keys.Enter))
+                    {
+                        // switch the state to the Game
+                        currState = GameState.Game;
+                    }
+                    break;
+                case GameState.Game:
+                    //call floorobject movement
+                    wall.MoveFloor();
+                    floor.MoveFloor();
+                    //Update score based on speed and score modifier
+                    secondCounter++;
+                    if (secondCounter >= 60)
+                    {
+                        secondCounter = 0;
+                        score = score + speed * scoreModifier;
+                    }
+                    // call the process input method
+                    ProcessInput();
+                    if (SingleKeyPress(Keys.Enter))
+                    {
+                        // switch the state to Pause
+                        currState = GameState.Pause;
+                    }
+                    break;
+                case GameState.Pause:
+
+                    if (SingleKeyPress(Keys.Enter))
+                    {
+                        // switch the state back to the game
+                        currState = GameState.Game;
+                    }
+                    break;
+                case GameState.GameOver:
+                    if (SingleKeyPress(Keys.Enter))
+                    {
+                        // return back to the menu
+                        currState = GameState.MainMenu;
+                    }
+                    break;
+            }
+
+            // set the previous gamestate variable to the current one
+            gkStatePrev = gkState;
         }
 
         /// <summary>
@@ -129,15 +196,39 @@ namespace MoonMiner
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();                       
-            
-            wall.Draw(spriteBatch);
-            floor.Draw(spriteBatch);
-            playChar.Draw(spriteBatch);
-            spriteBatch.DrawString(font, "Score: " + score, new Vector2(10, 10), Color.White);
+            spriteBatch.Begin();
+
+
+
+            // create a gameState switch to change what appears on screen at a specific time
+            switch(currState)
+            {
+                case GameState.MainMenu:
+                    spriteBatch.DrawString(font, "MOON MINER TEST TITLE SCREEN", new Vector2(300,300), Color.White);
+                    break;
+                case GameState.HowToPlay:
+                    spriteBatch.DrawString(font, "HOW TO PLAY", new Vector2(300, 300), Color.White);
+                    spriteBatch.DrawString(font, "Press up arrow to jump and down to duck. That is all. Press enter to begin.", new Vector2(100, 400), Color.White);
+                    break;
+                case GameState.Game:
+                    wall.Draw(spriteBatch);
+                    floor.Draw(spriteBatch);
+                    playChar.Draw(spriteBatch);
+                    spriteBatch.DrawString(font, "Score: " + score, new Vector2(10, 10), Color.White);
+                    break;
+                case GameState.Pause:
+                    spriteBatch.DrawString(font, "GAME IS PAUSED", new Vector2(300, 300), Color.White);
+                    break;
+                case GameState.GameOver:
+                    spriteBatch.DrawString(font, "GAME OVER", new Vector2(300, 300), Color.White);
+                    break;
+            }
+
+            // set the previous mouse state to the current mouse state
+            gkStatePrev = Keyboard.GetState();
 
             spriteBatch.End();
 
@@ -198,6 +289,21 @@ namespace MoonMiner
 
         }
 
-        
+        // create a method called SingleKeyPress
+        public bool SingleKeyPress(Keys key)
+        {
+            // get the keyboard state variable
+            gkState = Keyboard.GetState();
+            if (gkState.IsKeyDown(key) && gkStatePrev.IsKeyUp(key))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
     }
 }
