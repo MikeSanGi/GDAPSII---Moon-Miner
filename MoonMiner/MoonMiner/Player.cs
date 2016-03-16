@@ -23,7 +23,25 @@ namespace MoonMiner
         private float grav = 1F;
         private bool playerJump = false;
         private bool falling = false;
+        private bool duck = false;
 
+
+        //animation attributes
+        int frame;
+        double timePerFrame = 50;
+        int numFrames = 3;
+        int framesElapsed;
+        const int CART_Y = 0;
+        const int CART_HEIGHT = 100;
+        const int CART_WIDTH = 100;
+        const int CART_X_OFFSET = 0;
+
+        //animation method
+        public void Animate(GameTime gameTime)
+        {
+            framesElapsed = (int)(gameTime.TotalGameTime.TotalMilliseconds / timePerFrame);
+            frame = framesElapsed % numFrames;
+        }
 
         //constructor
         public Player(Vector2 ps)
@@ -36,6 +54,11 @@ namespace MoonMiner
         {
             get { return playerJump; }
             set { playerJump = value; }
+        }
+        public bool Duck
+        {
+            get { return duck; }
+            set { duck = value; }
         }
 
         public bool Falling
@@ -95,7 +118,11 @@ namespace MoonMiner
         //Draw method
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(image, pos, Color.White);
+            if(Duck == true)
+            {
+                spriteBatch.Draw(image, Pos, new Rectangle(CART_X_OFFSET + frame * CART_WIDTH, CART_Y, CART_WIDTH, 50), Color.White);
+            }
+            spriteBatch.Draw(image, Pos, new Rectangle(CART_X_OFFSET + frame * CART_WIDTH, CART_Y, CART_WIDTH, CART_HEIGHT), Color.White);
         }
     }
 }

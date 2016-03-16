@@ -86,7 +86,7 @@ namespace MoonMiner
 
             // TODO: use this.Content to load your game content here
             background = Content.Load<Texture2D>("Background2");
-            player = Content.Load<Texture2D>("boxChar1");
+            player = Content.Load<Texture2D>("CharSpriteSheet");
             floorImg = Content.Load<Texture2D>("Floor");
             font = Content.Load<SpriteFont>("Arial");
 
@@ -120,6 +120,10 @@ namespace MoonMiner
             // TODO: Add your update logic here
 
             base.Update(gameTime);
+
+            //time for Animation
+            playChar.Animate(gameTime);
+
             /*
             //call floorobject movement
             wall.MoveFloor();
@@ -135,7 +139,7 @@ namespace MoonMiner
             */
 
             // create a gameState switch to detect the game State
-            switch(currState)
+            switch (currState)
             {
                 case GameState.MainMenu: if (SingleKeyPress(Keys.Enter))
                     {
@@ -233,6 +237,7 @@ namespace MoonMiner
             spriteBatch.End();
 
             base.Draw(gameTime);
+
         }
 
         // create a method named process input
@@ -258,7 +263,7 @@ namespace MoonMiner
 
             if (playChar.PlayerJump == true)
             {
-                player = Content.Load<Texture2D>("BoxChar1");
+                player = Content.Load<Texture2D>("CharSpriteSheet");
                 playChar.Image = player;
                 playChar.Jump();
             }
@@ -267,12 +272,13 @@ namespace MoonMiner
             if (kState.IsKeyDown(Keys.Down) && playChar.PlayerJump == false)
             {
                 // have the player duck
-                player = Content.Load<Texture2D>("boxChar2");
+                player = Content.Load<Texture2D>("Char2SpriteSheet");
                 playChar.Image = player;
                 while (playChar.PosY <= 300 && playChar.PlayerJump == false)
                 {
                     playChar.PosY += 50;
                     playChar.Pos = new Vector2(playChar.PosX, playChar.PosY);
+                    playChar.Duck = true;
                 }         
             }
 
@@ -280,8 +286,9 @@ namespace MoonMiner
             if (kState.IsKeyUp(Keys.Down) && kState.IsKeyUp(Keys.Up) && playChar.PlayerJump == false)
             {
                 playChar.PosY = 300;
+                playChar.Duck = false;
                 playChar.Pos = new Vector2(playChar.PosX, playChar.PosY);
-                player = Content.Load<Texture2D>("BoxChar1");
+                player = Content.Load<Texture2D>("CharSpriteSheet");
                 playChar.Image = player;
             }
 
