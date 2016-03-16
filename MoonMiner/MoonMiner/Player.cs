@@ -122,6 +122,10 @@ namespace MoonMiner
             {
                 spriteBatch.Draw(image, Pos, new Rectangle(CART_X_OFFSET + frame * CART_WIDTH, CART_Y, CART_WIDTH, CART_HEIGHT), Color.White);
             }
+            if(PlayerJump == true)
+            {
+                spriteBatch.Draw(image, Pos, Color.White);
+            }
             else
             {
                 spriteBatch.Draw(image, Pos, new Rectangle(CART_X_OFFSET + frame * CART_WIDTH, CART_Y, CART_WIDTH, CART_HEIGHT/2), Color.White);

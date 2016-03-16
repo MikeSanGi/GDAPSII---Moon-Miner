@@ -263,7 +263,7 @@ namespace MoonMiner
 
             if (playChar.PlayerJump == true)
             {
-                player = Content.Load<Texture2D>("CharSpriteSheet");
+                player = Content.Load<Texture2D>("JumpChar1");
                 playChar.Image = player;
                 playChar.Jump();
             }
