@@ -26,14 +26,15 @@ namespace MoonMiner
         KeyboardState gkState;
         KeyboardState gkStatePrev;
 
-        //Creating attributes for difficulty (It's set on 'Easy' by default)
+         //Creating attributes for difficulty (It's set on 'Easy' by default)
         double scoreModifier = .5;
         double speed = 1;
         double score = 0;
         double obstacleFrequency = 1;
         bool difficultyUp = false;
         int secondCounter;
-        //PUT CODE IN HERE FOR STREAM READER WHEN I FIGURE IT OUT TO REPLACE DEFAULT VALUES FOR THOSE VARIABLES
+        int tenSecondCounter;
+        StreamReader reader;
 
         
         //create objects
@@ -58,6 +59,15 @@ namespace MoonMiner
         {
             // TODO: Add your initialization logic here
         
+            //Initialize the difficulty
+            reader = new StreamReader("../../../../../MoonMiner - External Tool/MoonMiner - External Tool/bin/Debug/difficulty.txt");
+            string difficultyBase = reader.ReadLine();
+            reader.Close();
+            string[] difficultyExtraction = difficultyBase.Split(' ');
+            double[] difficultyConverted = System.Array.ConvertAll<string, double>(difficultyExtraction, double.Parse);
+            obstacleFrequency = difficultyConverted[0];
+            speed = difficultyConverted[1];
+            scoreModifier = difficultyConverted[2];
             
             //create character objects
             playChar = new Player(new Vector2(1000, 300));
@@ -124,18 +134,32 @@ namespace MoonMiner
             //time for Animation
             playChar.Animate(gameTime);
 
-            /*
-            //call floorobject movement
-            wall.MoveFloor();
-            floor.MoveFloor();
-            
-            //Update score based on speed and score modifier
+            //Update score based on speed and score modifier, and find new difficulty
             secondCounter++;
+            tenSecondCounter++;
             if (secondCounter >= 60)
             {
                 secondCounter = 0;
                 score = score + speed * scoreModifier;
+                tenSecondCounter++;
             }
+            if (tenSecondCounter >= 600)
+            {
+                tenSecondCounter = 0;
+                difficultyUp = true;
+            }
+            if (difficultyUp == true)
+            {
+                difficultyUp = false;
+                obstacleFrequency++;
+                speed++;
+                scoreModifier = scoreModifier + .1;
+            }
+            
+            /*
+            //call floorobject movement
+            wall.MoveFloor();
+            floor.MoveFloor();
             */
 
             // create a gameState switch to detect the game State
