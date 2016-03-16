@@ -273,12 +273,12 @@ namespace MoonMiner
             {
                 // have the player duck
                 player = Content.Load<Texture2D>("Char2SpriteSheet");
+                playChar.Duck = true;
                 playChar.Image = player;
                 while (playChar.PosY <= 300 && playChar.PlayerJump == false)
                 {
                     playChar.PosY += 50;
-                    playChar.Pos = new Vector2(playChar.PosX, playChar.PosY);
-                    playChar.Duck = true;
+                    playChar.Pos = new Vector2(playChar.PosX, playChar.PosY);                    
                 }         
             }
 
