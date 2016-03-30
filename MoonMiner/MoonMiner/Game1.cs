@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
 
-namespace MoonMiner
+namespace MoonMinerExecutable
 {
     /// <summary>
     /// This is the main type for your game.
@@ -41,6 +41,7 @@ namespace MoonMiner
         FloorObjects wall;
         FloorObjects floor;
         Player playChar;
+        Obstacles rocks;
 
 
         public Game1()
@@ -70,11 +71,14 @@ namespace MoonMiner
             scoreModifier = difficultyConverted[2];
             
             //create character objects
-            playChar = new Player(new Vector2(1000, 300));
+            playChar = new Player(new Rectangle(1000, 300,100,100));
 
             //create floor objects
             wall = new FloorObjects(new Vector2(0, 0));
             floor = new FloorObjects(new Vector2(0, 400));
+
+            // create obstacles
+            rocks = new Obstacles(new Rectangle(1000, 500, 100, 100));
 
             // set the initial game state
             currState = GameState.MainMenu;
@@ -103,6 +107,9 @@ namespace MoonMiner
             //load images into floor objects
             wall.Image = background;
             floor.Image = floorImg;
+
+            // load obstacle image
+            rocks.Image = Content.Load<Texture2D>("boxChar");
 
             //load image to player object
             playChar.Image = player;
@@ -155,12 +162,6 @@ namespace MoonMiner
                 speed++;
                 scoreModifier = scoreModifier + .1;
             }
-            
-            /*
-            //call floorobject movement
-            wall.MoveFloor();
-            floor.MoveFloor();
-            */
 
             // create a gameState switch to detect the game State
             switch (currState)
@@ -182,6 +183,19 @@ namespace MoonMiner
                     //call floorobject movement
                     wall.MoveFloor();
                     floor.MoveFloor();
+
+                    // move objects
+                    rocks.Move();
+
+                    //check for a collison
+                    if(rocks.CheckCollision(playChar))
+                    {
+                        // switch to the gameOver state
+                        currState = GameState.GameOver;
+                    }
+
+
+
                     //Update score based on speed and score modifier
                     secondCounter++;
                     if (secondCounter >= 60)
@@ -245,6 +259,7 @@ namespace MoonMiner
                     wall.Draw(spriteBatch);
                     floor.Draw(spriteBatch);
                     playChar.Draw(spriteBatch);
+                    rocks.Draw(spriteBatch);
                     spriteBatch.DrawString(font, "Score: " + score, new Vector2(10, 10), Color.White);
                     break;
                 case GameState.Pause:
@@ -281,7 +296,7 @@ namespace MoonMiner
             {
                 // have the player jump
                 playChar.PosY = 300;
-                playChar.Pos = new Vector2(playChar.PosX, playChar.PosY);
+                playChar.Pos = new Rectangle(playChar.PosX, playChar.PosY,100,100);
                 playChar.PlayerJump = true;
             }
 
@@ -296,13 +311,13 @@ namespace MoonMiner
             if (kState.IsKeyDown(Keys.Down) && playChar.PlayerJump == false)
             {
                 // have the player duck
-                player = Content.Load<Texture2D>("Char2SpriteSheet");
+                player = Content.Load<Texture2D>("BoxChar2");
                 playChar.Duck = true;
                 playChar.Image = player;
                 while (playChar.PosY <= 300 && playChar.PlayerJump == false)
                 {
                     playChar.PosY += 50;
-                    playChar.Pos = new Vector2(playChar.PosX, playChar.PosY);                    
+                    playChar.Pos = new Rectangle(playChar.PosX, playChar.PosY,100,100);                    
                 }         
             }
 
@@ -311,7 +326,7 @@ namespace MoonMiner
             {
                 playChar.PosY = 300;
                 playChar.Duck = false;
-                playChar.Pos = new Vector2(playChar.PosX, playChar.PosY);
+                playChar.Pos = new Rectangle(playChar.PosX, playChar.PosY,100,100);
                 player = Content.Load<Texture2D>("CharSpriteSheet");
                 playChar.Image = player;
             }

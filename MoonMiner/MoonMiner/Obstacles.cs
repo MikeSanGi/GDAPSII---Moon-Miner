@@ -6,17 +6,17 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace MoonMiner
+namespace MoonMinerExecutable
 {
     class Obstacles
     {
         //attributes
         private Texture2D image;
         private Rectangle pos;
-        private Boolean active;
+        private bool active;
 
         //properties
-        public Boolean Active
+        public bool Active
         {
             get { return active; }
             set { active = value; }
@@ -33,25 +33,47 @@ namespace MoonMiner
             set { pos = value; }
 
         }
+        // create X and Y properties for easier access to the rectangle position
+        public int X
+        {
+            get { return pos.X; }
+            set { pos.X = value; }
+        }
+        public int Y
+        {
+            get { return pos.Y; }
+            set { pos.Y = value; }
+        }
 
         //constructor
-        public Obstacles(Texture2D img)
+        public Obstacles(Rectangle position)
         {
-            image = img;
+            pos = position;
             active = true;
         }
 
         //Movement method
         public void Move()
         {
-
+            pos.X -= 5;
+            if (pos.X == -100)
+            {
+                pos.X = 500;
+            }
         }
 
         //Collision Detection Method
-        public Boolean CheckCollision(Player plr)
+        public bool CheckCollision(Player plr)
         {
-            Boolean collide = false;
-            return collide;
+            // check to see if one rectangle intersects the other
+            if(plr.Pos.Intersects(this.Pos))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         //draw method
@@ -59,7 +81,7 @@ namespace MoonMiner
         {
             if(active == true)
             {
-                spriteBatch.Draw(Image, pos, Color.White);
+                spriteBatch.Draw(Image, new Vector2(pos.X,pos.Y), Color.White);
             }
         }
     }
