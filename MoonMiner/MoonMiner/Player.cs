@@ -13,7 +13,7 @@ namespace MoonMiner
     {
         //attributes
         private Texture2D image;
-        private Vector2 pos;
+        private Rectangle pos;
         private int posY;
         private int posX = 50;      
 
@@ -44,7 +44,7 @@ namespace MoonMiner
         }
 
         //constructor
-        public Player(Vector2 ps)
+        public Player(Rectangle ps)
         {
             pos = ps;
         }
@@ -84,7 +84,7 @@ namespace MoonMiner
             get { return posX; }            
         }
 
-        public Vector2 Pos
+        public Rectangle Pos
         {
             get { return pos; }
             set { pos = value; }
@@ -96,7 +96,7 @@ namespace MoonMiner
             {
                 playerJump = true;
                 vsp += grav;
-                pos.Y += vsp;
+                pos.Y += (int)vsp;
                 if (pos.Y <= 150)
                 {
                     falling = true;
@@ -121,11 +121,7 @@ namespace MoonMiner
             if (Duck == false)
             {
                 spriteBatch.Draw(image, Pos, new Rectangle(CART_X_OFFSET + frame * CART_WIDTH, CART_Y, CART_WIDTH, CART_HEIGHT), Color.White);
-            }
-            if(PlayerJump == true)
-            {
-                spriteBatch.Draw(image, Pos, Color.White);
-            }
+            }                 
             else
             {
                 spriteBatch.Draw(image, Pos, new Rectangle(CART_X_OFFSET + frame * CART_WIDTH, CART_Y, CART_WIDTH, CART_HEIGHT/2), Color.White);
