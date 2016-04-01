@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.IO;
+using System.Collections.Generic; // needed for Lists
+using System; // needed for RNG
 
 namespace MoonMinerExecutable
 {
@@ -17,6 +19,7 @@ namespace MoonMinerExecutable
         Texture2D background;        
         Texture2D player;        
         Texture2D floorImg;
+        Texture2D rockImg;
         SpriteFont font;
 
         // GameState variable
@@ -36,7 +39,11 @@ namespace MoonMinerExecutable
         int tenSecondCounter;
         StreamReader reader;
 
-        
+        // create a list of collectibles
+        List<Obstacles> obstacles;
+        // int for number of obstacles
+        int numObstacles;
+
         //create objects
         FloorObjects wall;
         FloorObjects floor;
@@ -78,12 +85,14 @@ namespace MoonMinerExecutable
             floor = new FloorObjects(new Vector2(0, 400));
 
             // create obstacles
-            rocks = new Obstacles(new Rectangle(1000, 500, 100, 100));
+            rocks = new Obstacles();
 
             // set the initial game state
             currState = GameState.MainMenu;
             gkState = Keyboard.GetState();
 
+            //set the obstacles to be active
+            rocks.Active = true;
 
             base.Initialize();
         }
@@ -103,13 +112,13 @@ namespace MoonMinerExecutable
             player = Content.Load<Texture2D>("CharSpriteSheet");
             floorImg = Content.Load<Texture2D>("Floor");
             font = Content.Load<SpriteFont>("Arial");
-
+            rockImg = Content.Load<Texture2D>("boxChar");
             //load images into floor objects
             wall.Image = background;
             floor.Image = floorImg;
 
             // load obstacle image
-            rocks.Image = Content.Load<Texture2D>("boxChar");
+            rocks.Image = rockImg;
 
             //load image to player object
             playChar.Image = player;
@@ -259,7 +268,8 @@ namespace MoonMinerExecutable
                     wall.Draw(spriteBatch);
                     floor.Draw(spriteBatch);
                     playChar.Draw(spriteBatch);
-                    rocks.Draw(spriteBatch);
+                    //rocks.Draw(spriteBatch);
+                    spriteBatch.Draw(rocks.Image,rocks.Pos,Color.White);
                     spriteBatch.DrawString(font, "Score: " + score, new Vector2(10, 10), Color.White);
                     break;
                 case GameState.Pause:
@@ -302,7 +312,7 @@ namespace MoonMinerExecutable
 
             if (playChar.PlayerJump == true)
             {
-                player = Content.Load<Texture2D>("JumpChar1");
+                player = Content.Load<Texture2D>("JumpCharSheet");
                 playChar.Image = player;
                 playChar.Jump();
             }
@@ -311,13 +321,13 @@ namespace MoonMinerExecutable
             if (kState.IsKeyDown(Keys.Down) && playChar.PlayerJump == false)
             {
                 // have the player duck
-                player = Content.Load<Texture2D>("BoxChar2");
+                player = Content.Load<Texture2D>("Char2SpriteSheet");
                 playChar.Duck = true;
                 playChar.Image = player;
                 while (playChar.PosY <= 300 && playChar.PlayerJump == false)
                 {
                     playChar.PosY += 50;
-                    playChar.Pos = new Rectangle(playChar.PosX, playChar.PosY,100,100);                    
+                    playChar.Pos = new Rectangle(playChar.PosX, playChar.PosY,100,50);                    
                 }         
             }
 
@@ -347,6 +357,28 @@ namespace MoonMinerExecutable
             else
             {
                 return false;
+            }
+        }
+
+        // create a method for obstacle generation
+        public void ObstacleSpawn()
+        {
+            // loop to create the collectibles
+            for (int i = 0; i < numObstacles; i++)
+            {
+
+                // set the x and y values of the collectible to random coordinates on the screen
+                //int posX = rgen.Next(0, GraphicsDevice.Viewport.Width);
+                //int posY = rgen.Next(0, GraphicsDevice.Viewport.Height);
+
+                // create a new collectible object and make them all be the same size
+                //Collectible something = new Collectible(posX, posY, 50, 50);
+
+                // set the image for the game object
+                //something.GameObjects = collectibleImage;
+
+                // add the collectible to the list
+                //collectibles.Add(something);
             }
         }
 

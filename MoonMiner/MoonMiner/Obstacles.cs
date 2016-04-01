@@ -46,9 +46,9 @@ namespace MoonMinerExecutable
         }
 
         //constructor
-        public Obstacles(Rectangle position)
+        public Obstacles()
         {
-            pos = position;
+            Pos = new Rectangle(1000,370,30,30);
             active = true;
         }
 
@@ -66,7 +66,7 @@ namespace MoonMinerExecutable
         public bool CheckCollision(Player plr)
         {
             // check to see if one rectangle intersects the other
-            if(plr.Pos.Intersects(this.Pos))
+            if(plr.Pos.Intersects(Pos))
             {
                 return true;
             }
@@ -81,7 +81,8 @@ namespace MoonMinerExecutable
         {
             if(active == true)
             {
-                spriteBatch.Draw(Image, new Vector2(pos.X,pos.Y), Color.White);
+                spriteBatch.Draw(Image, new Rectangle(pos.X,pos.Y,50,50), Color.White);
+                spriteBatch.Draw(Image, new Vector2(500, 500), Color.White);
             }
         }
     }
