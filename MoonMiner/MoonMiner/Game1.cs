@@ -32,7 +32,8 @@ namespace MoonMiner
          //Creating attributes for difficulty (It's set on 'Easy' by default)
         double scoreModifier = .5;
         int speed = 1;
-        double score = 0;
+        double scoreDouble = 0;
+        int score = 0;
         double obstacleFrequency = 1;
         bool difficultyUp = false;
         int secondCounter;
@@ -68,14 +69,23 @@ namespace MoonMiner
             // TODO: Add your initialization logic here
         
             //Initialize the difficulty
-            reader = new StreamReader("../../../../../MoonMiner - External Tool/MoonMiner - External Tool/bin/Debug/difficulty.txt");
-            string difficultyBase = reader.ReadLine();
-            reader.Close();
-            string[] difficultyExtraction = difficultyBase.Split(' ');
-            int[] difficultyConverted = System.Array.ConvertAll<string, int>(difficultyExtraction, int.Parse);
-            obstacleFrequency = difficultyConverted[0];
-            speed = difficultyConverted[1];
-            scoreModifier = difficultyConverted[2];
+            try
+            {
+                reader = new StreamReader("../../../../../MoonMiner - External Tool/MoonMiner - External Tool/bin/Debug/difficulty.txt");
+                string difficultyBase = reader.ReadLine();
+                reader.Close();
+                string[] difficultyExtraction = difficultyBase.Split(' ');
+                int[] difficultyConverted = System.Array.ConvertAll<string, int>(difficultyExtraction, int.Parse);
+                obstacleFrequency = difficultyConverted[0];
+                speed = difficultyConverted[1];
+                scoreModifier = difficultyConverted[2];
+            }
+            catch (Exception)
+            {
+                obstacleFrequency = 1;
+                speed = 1;
+                scoreModifier = .5;
+            }
             
             //create character objects
             playChar = new Player(new Rectangle(1000, 300,100,100));
@@ -156,7 +166,8 @@ namespace MoonMiner
             if (secondCounter >= 60)
             {
                 secondCounter = 0;
-                score = score + speed * scoreModifier;
+                scoreDouble = scoreDouble + speed * scoreModifier;
+                score = Convert.ToInt32(scoreDouble);
                 tenSecondCounter++;
             }
             if (tenSecondCounter >= 600)
@@ -204,15 +215,6 @@ namespace MoonMiner
                         currState = GameState.GameOver;
                     }
 
-
-
-                    //Update score based on speed and score modifier
-                    secondCounter++;
-                    if (secondCounter >= 60)
-                    {
-                        secondCounter = 0;
-                        score = score + speed * scoreModifier;
-                    }
                     // call the process input method
                     ProcessInput();
                     if (SingleKeyPress(Keys.Enter))
