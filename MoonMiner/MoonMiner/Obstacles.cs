@@ -46,9 +46,9 @@ namespace MoonMinerExecutable
         }
 
         //constructor
-        public Obstacles()
+        public Obstacles(Rectangle position)
         {
-            Pos = new Rectangle(1000,370,30,30);
+            Pos = position;
             active = true;
         }
 

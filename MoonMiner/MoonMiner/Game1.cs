@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections.Generic; // needed for Lists
 using System; // needed for RNG
 
-namespace MoonMiner
+namespace MoonMinerExecutable
 {
     /// <summary>
     /// This is the main type for your game.
@@ -31,9 +31,8 @@ namespace MoonMiner
 
          //Creating attributes for difficulty (It's set on 'Easy' by default)
         double scoreModifier = .5;
-        int speed = 1;
-        double scoreDouble = 0;
-        int score = 0;
+        double speed = 1;
+        double score = 0;
         double obstacleFrequency = 1;
         bool difficultyUp = false;
         int secondCounter;
@@ -69,33 +68,28 @@ namespace MoonMiner
             // TODO: Add your initialization logic here
         
             //Initialize the difficulty
-            try
-            {
-                reader = new StreamReader("../../../../../MoonMiner - External Tool/MoonMiner - External Tool/bin/Debug/difficulty.txt");
-                string difficultyBase = reader.ReadLine();
-                reader.Close();
-                string[] difficultyExtraction = difficultyBase.Split(' ');
-                int[] difficultyConverted = System.Array.ConvertAll<string, int>(difficultyExtraction, int.Parse);
-                obstacleFrequency = difficultyConverted[0];
-                speed = difficultyConverted[1];
-                scoreModifier = difficultyConverted[2];
-            }
-            catch (Exception)
-            {
-                obstacleFrequency = 1;
-                speed = 1;
-                scoreModifier = .5;
-            }
+            reader = new StreamReader("../../../../../MoonMiner - External Tool/MoonMiner - External Tool/bin/Debug/difficulty.txt");
+            string difficultyBase = reader.ReadLine();
+            reader.Close();
+            string[] difficultyExtraction = difficultyBase.Split(' ');
+            double[] difficultyConverted = System.Array.ConvertAll<string, double>(difficultyExtraction, double.Parse);
+            obstacleFrequency = difficultyConverted[0];
+            speed = difficultyConverted[1];
+            scoreModifier = difficultyConverted[2];
             
             //create character objects
             playChar = new Player(new Rectangle(1000, 300,100,100));
 
             //create floor objects
-            wall = new FloorObjects(new Vector2(0, 0), speed);
-            floor = new FloorObjects(new Vector2(0, 400), speed);
+            wall = new FloorObjects(new Vector2(0, 0));
+            floor = new FloorObjects(new Vector2(0, 400));
 
             // create obstacles
-            rocks = new Obstacles();
+            rocks = new Obstacles(new Rectangle(500,500,30,30));
+            obstacles = new List<Obstacles>();
+
+            // set the number of obstacles
+            numObstacles = 10;
 
             // set the initial game state
             currState = GameState.MainMenu;
@@ -118,7 +112,7 @@ namespace MoonMiner
 
 
             // TODO: use this.Content to load your game content here
-            background = Content.Load<Texture2D>("backgroundtest");
+            background = Content.Load<Texture2D>("Background2");
             player = Content.Load<Texture2D>("CharSpriteSheet");
             floorImg = Content.Load<Texture2D>("Floor");
             font = Content.Load<SpriteFont>("Arial");
@@ -126,9 +120,6 @@ namespace MoonMiner
             //load images into floor objects
             wall.Image = background;
             floor.Image = floorImg;
-
-            // load obstacle image
-            rocks.Image = rockImg;
 
             //load image to player object
             playChar.Image = player;
@@ -166,8 +157,7 @@ namespace MoonMiner
             if (secondCounter >= 60)
             {
                 secondCounter = 0;
-                scoreDouble = scoreDouble + speed * scoreModifier;
-                score = Convert.ToInt32(scoreDouble);
+                score = score + speed * scoreModifier;
                 tenSecondCounter++;
             }
             if (tenSecondCounter >= 600)
@@ -179,8 +169,7 @@ namespace MoonMiner
             {
                 difficultyUp = false;
                 obstacleFrequency++;
-                wall.Speed++;
-                floor.Speed++;
+                speed++;
                 scoreModifier = scoreModifier + .1;
             }
 
@@ -205,16 +194,32 @@ namespace MoonMiner
                     wall.MoveFloor();
                     floor.MoveFloor();
 
-                    // move objects
-                    rocks.Move();
+                    // loop to spawn the obstacles
+                    for (int i = 0; i < obstacles.Count; i++)
+                    {
+                        if (obstacles[i].Active)
+                        {
+                            ObstacleSpawn();
+                            rocks.Move();
+                        }
+                    }
 
                     //check for a collison
-                    if(rocks.CheckCollision(playChar))
+                    if (rocks.CheckCollision(playChar))
                     {
                         // switch to the gameOver state
                         currState = GameState.GameOver;
                     }
 
+
+
+                    //Update score based on speed and score modifier
+                    secondCounter++;
+                    if (secondCounter >= 60)
+                    {
+                        secondCounter = 0;
+                        score = score + speed * scoreModifier;
+                    }
                     // call the process input method
                     ProcessInput();
                     if (SingleKeyPress(Keys.Enter))
@@ -236,6 +241,8 @@ namespace MoonMiner
                     {
                         // return back to the menu
                         currState = GameState.MainMenu;
+                        // reset the obstacles
+                        Reset();
                     }
                     break;
             }
@@ -272,7 +279,17 @@ namespace MoonMiner
                     floor.Draw(spriteBatch);
                     playChar.Draw(spriteBatch);
                     //rocks.Draw(spriteBatch);
-                    spriteBatch.Draw(rocks.Image,rocks.Pos,Color.White);
+                    //spriteBatch.Draw(rocks.Image,rocks.Pos,Color.White);
+
+                    // loop to draw the obstacles
+                    for (int i = 0; i < obstacles.Count; i++)
+                    {
+                        if (obstacles[i].Active)
+                        {
+                            spriteBatch.Draw(obstacles[i].Image, obstacles[i].Pos, Color.White);
+                        }
+                    }
+
                     spriteBatch.DrawString(font, "Score: " + score, new Vector2(10, 10), Color.White);
                     break;
                 case GameState.Pause:
@@ -366,23 +383,32 @@ namespace MoonMiner
         // create a method for obstacle generation
         public void ObstacleSpawn()
         {
+            // create random number generator
+            Random rgen = new Random();
+
             // loop to create the collectibles
             for (int i = 0; i < numObstacles; i++)
             {
 
-                // set the x and y values of the collectible to random coordinates on the screen
-                //int posX = rgen.Next(0, GraphicsDevice.Viewport.Width);
-                //int posY = rgen.Next(0, GraphicsDevice.Viewport.Height);
+                // set the y values of the obstacles to random spots on the screen
+                int posY = rgen.Next(0, 301);
 
                 // create a new collectible object and make them all be the same size
-                //Collectible something = new Collectible(posX, posY, 50, 50);
+                Obstacles rock = new Obstacles(new Rectangle(500,posY,30,30));
 
                 // set the image for the game object
-                //something.GameObjects = collectibleImage;
+                rock.Image = rockImg;
 
                 // add the collectible to the list
-                //collectibles.Add(something);
+                obstacles.Add(rock);
             }
+        }
+
+        // create a method to reset the game objects
+        public void Reset()
+        {
+            rocks.Active = false;
+            rocks.Pos = new Rectangle(1000, 1000, 0, 0);
         }
 
 
