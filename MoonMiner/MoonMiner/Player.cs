@@ -15,7 +15,8 @@ namespace MoonMiner
         private Texture2D image;
         private Rectangle pos;
         private int posY;
-        private int posX = 50;      
+        private int posX = 50;
+        private int numLives;     
 
         //jump attributes
         private int baseY = 300;
@@ -47,6 +48,7 @@ namespace MoonMiner
         public Player(Rectangle ps)
         {
             pos = ps;
+            numLives = 3;
         }
 
         //properties
@@ -88,6 +90,12 @@ namespace MoonMiner
         {
             get { return pos; }
             set { pos = value; }
+        }
+
+        public int NumLives
+        {
+            get { return numLives; }
+            set { numLives = value; }
         }
 
         //Jump method

@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections.Generic; // needed for Lists
 using System; // needed for RNG
 
-namespace MoonMinerExecutable
+namespace MoonMiner
 {
     /// <summary>
     /// This is the main type for your game.
@@ -21,6 +21,7 @@ namespace MoonMinerExecutable
         Texture2D floorImg;
         Texture2D rockImg;
         SpriteFont font;
+        Texture2D lives;
 
         // GameState variable
         GameState currState;
@@ -31,7 +32,7 @@ namespace MoonMinerExecutable
 
          //Creating attributes for difficulty (It's set on 'Easy' by default)
         double scoreModifier = .5;
-        double speed = 1;
+        int speed = 1;
         double score = 0;
         double obstacleFrequency = 1;
         bool difficultyUp = false;
@@ -72,7 +73,7 @@ namespace MoonMinerExecutable
             string difficultyBase = reader.ReadLine();
             reader.Close();
             string[] difficultyExtraction = difficultyBase.Split(' ');
-            double[] difficultyConverted = System.Array.ConvertAll<string, double>(difficultyExtraction, double.Parse);
+            int[] difficultyConverted = System.Array.ConvertAll<string, int>(difficultyExtraction, int.Parse);
             obstacleFrequency = difficultyConverted[0];
             speed = difficultyConverted[1];
             scoreModifier = difficultyConverted[2];
@@ -81,8 +82,8 @@ namespace MoonMinerExecutable
             playChar = new Player(new Rectangle(1000, 300,100,100));
 
             //create floor objects
-            wall = new FloorObjects(new Vector2(0, 0));
-            floor = new FloorObjects(new Vector2(0, 400));
+            wall = new FloorObjects(new Vector2(0, 0),speed);
+            floor = new FloorObjects(new Vector2(0, 400), speed);
 
             // create obstacles
             rocks = new Obstacles(new Rectangle(500,500,30,30));
@@ -117,6 +118,7 @@ namespace MoonMinerExecutable
             floorImg = Content.Load<Texture2D>("Floor");
             font = Content.Load<SpriteFont>("Arial");
             rockImg = Content.Load<Texture2D>("boxChar");
+            lives = Content.Load<Texture2D>("TempLife");
             //load images into floor objects
             wall.Image = background;
             floor.Image = floorImg;
@@ -169,7 +171,8 @@ namespace MoonMinerExecutable
             {
                 difficultyUp = false;
                 obstacleFrequency++;
-                speed++;
+                wall.Speed++;
+                floor.Speed++;
                 scoreModifier = scoreModifier + .1;
             }
 
@@ -207,8 +210,13 @@ namespace MoonMinerExecutable
                     //check for a collison
                     if (rocks.CheckCollision(playChar))
                     {
-                        // switch to the gameOver state
-                        currState = GameState.GameOver;
+                        //remove a life
+                        playChar.NumLives -= 1;
+                        if (playChar.NumLives <= 0)
+                        {
+                            // switch to the gameOver state
+                            currState = GameState.GameOver;
+                        }
                     }
 
 
@@ -291,6 +299,11 @@ namespace MoonMinerExecutable
                     }
 
                     spriteBatch.DrawString(font, "Score: " + score, new Vector2(10, 10), Color.White);
+                    //draw lives
+                    for (int i = 0; i < playChar.NumLives; i++)
+                    {
+                        spriteBatch.Draw(lives, new Vector2(10 + (i * 40), 20), Color.White);
+                    }
                     break;
                 case GameState.Pause:
                     spriteBatch.DrawString(font, "GAME IS PAUSED", new Vector2(300, 300), Color.White);
