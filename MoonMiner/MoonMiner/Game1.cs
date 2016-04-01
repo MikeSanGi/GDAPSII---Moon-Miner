@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections.Generic; // needed for Lists
 using System; // needed for RNG
 
-namespace MoonMinerExecutable
+namespace MoonMiner
 {
     /// <summary>
     /// This is the main type for your game.
@@ -31,7 +31,7 @@ namespace MoonMinerExecutable
 
          //Creating attributes for difficulty (It's set on 'Easy' by default)
         double scoreModifier = .5;
-        double speed = 1;
+        int speed = 1;
         double score = 0;
         double obstacleFrequency = 1;
         bool difficultyUp = false;
@@ -72,7 +72,7 @@ namespace MoonMinerExecutable
             string difficultyBase = reader.ReadLine();
             reader.Close();
             string[] difficultyExtraction = difficultyBase.Split(' ');
-            double[] difficultyConverted = System.Array.ConvertAll<string, double>(difficultyExtraction, double.Parse);
+            int[] difficultyConverted = System.Array.ConvertAll<string, int>(difficultyExtraction, int.Parse);
             obstacleFrequency = difficultyConverted[0];
             speed = difficultyConverted[1];
             scoreModifier = difficultyConverted[2];
@@ -81,8 +81,8 @@ namespace MoonMinerExecutable
             playChar = new Player(new Rectangle(1000, 300,100,100));
 
             //create floor objects
-            wall = new FloorObjects(new Vector2(0, 0));
-            floor = new FloorObjects(new Vector2(0, 400));
+            wall = new FloorObjects(new Vector2(0, 0), speed);
+            floor = new FloorObjects(new Vector2(0, 400), speed);
 
             // create obstacles
             rocks = new Obstacles();
@@ -108,7 +108,7 @@ namespace MoonMinerExecutable
 
 
             // TODO: use this.Content to load your game content here
-            background = Content.Load<Texture2D>("Background2");
+            background = Content.Load<Texture2D>("backgroundtest");
             player = Content.Load<Texture2D>("CharSpriteSheet");
             floorImg = Content.Load<Texture2D>("Floor");
             font = Content.Load<SpriteFont>("Arial");
@@ -168,7 +168,8 @@ namespace MoonMinerExecutable
             {
                 difficultyUp = false;
                 obstacleFrequency++;
-                speed++;
+                wall.Speed++;
+                floor.Speed++;
                 scoreModifier = scoreModifier + .1;
             }
 

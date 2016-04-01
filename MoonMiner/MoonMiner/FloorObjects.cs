@@ -13,6 +13,7 @@ namespace MoonMiner
         //attributes
         private Texture2D image;
         private Vector2 pos;
+        private int speed;
 
         //properties
         public Texture2D Image
@@ -22,16 +23,24 @@ namespace MoonMiner
         }
 
         //constructor
-        public FloorObjects(Vector2 ps)
+        public FloorObjects(Vector2 ps, int sp)
         {
            pos = ps;
+           speed = sp;
+        }
+
+        //property
+        public int Speed
+        {
+            get { return speed; }
+            set { speed = value; }
         }
 
         //Movement
         public void MoveFloor()
         {
-            pos.X -= 3;
-            if (pos.X == -960)
+            pos.X -= speed;
+            if (pos.X <= -960)
             {
                 pos.X = 0;
             }
