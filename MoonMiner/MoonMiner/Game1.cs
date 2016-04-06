@@ -144,7 +144,7 @@ namespace MoonMiner
 
 
             // TODO: use this.Content to load your game content here
-            background = Content.Load<Texture2D>("backgroundtest");
+            background = Content.Load<Texture2D>("Background2");
             player = Content.Load<Texture2D>("CharSpriteSheet");
             floorImg = Content.Load<Texture2D>("Floor");
             font = Content.Load<SpriteFont>("Arial");
