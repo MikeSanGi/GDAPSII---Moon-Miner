@@ -32,12 +32,13 @@ namespace MoonMiner
 
          //Creating attributes for difficulty (It's set on 'Easy' by default)
         double scoreModifier = .5;
-        int speed = 1;
-        double score = 0;
         int scoreNum = 0;
+        int speed = 4;
+        double score = 0;
         double obstacleFrequency = 1;
         bool difficultyUp = false;
         int secondCounter;
+        int spawnCounter = 0;
         int tenSecondCounter;
         StreamReader reader;
 
@@ -96,7 +97,7 @@ namespace MoonMiner
             floor = new FloorObjects(new Vector2(0, 400), speed);
 
             // create obstacles
-            rocks = new Obstacles(new Rectangle(500,500,30,30));
+            //rocks = new Obstacles(new Rectangle(500,500,30,30));
             obstacles = new List<Obstacles>();
 
             // set the number of obstacles
@@ -107,7 +108,7 @@ namespace MoonMiner
             gkState = Keyboard.GetState();
 
             //set the obstacles to be active
-            rocks.Active = true;
+           //rocks.Active = true;
 
             base.Initialize();
         }
@@ -123,12 +124,13 @@ namespace MoonMiner
 
 
             // TODO: use this.Content to load your game content here
-            background = Content.Load<Texture2D>("Background2");
+            background = Content.Load<Texture2D>("backgroundtest");
             player = Content.Load<Texture2D>("CharSpriteSheet");
             floorImg = Content.Load<Texture2D>("Floor");
             font = Content.Load<SpriteFont>("Arial");
             rockImg = Content.Load<Texture2D>("boxChar");
             lives = Content.Load<Texture2D>("TempLife");
+
             //load images into floor objects
             wall.Image = background;
             floor.Image = floorImg;
@@ -163,28 +165,7 @@ namespace MoonMiner
             //time for Animation
             playChar.Animate(gameTime);
 
-            //Update score based on speed and score modifier, and find new difficulty
-            secondCounter++;
-            tenSecondCounter++;
-            if (secondCounter >= 60)
-            {
-                secondCounter = 0;
-                scoreNum = Convert.ToInt32(score + speed * scoreModifier);
-                tenSecondCounter++;
-            }
-            if (tenSecondCounter >= 600)
-            {
-                tenSecondCounter = 0;
-                difficultyUp = true;
-            }
-            if (difficultyUp == true)
-            {
-                difficultyUp = false;
-                obstacleFrequency++;
-                wall.Speed++;
-                floor.Speed++;
-                scoreModifier = scoreModifier + .1;
-            }
+           
 
             // create a gameState switch to detect the game State
             switch (currState)
@@ -207,27 +188,74 @@ namespace MoonMiner
                     wall.MoveFloor();
                     floor.MoveFloor();
 
-                    // loop to spawn the obstacles
-                    for (int i = 0; i < obstacles.Count; i++)
+                    spawnCounter++;
+                    if(spawnCounter > 1000)
                     {
-                        if (obstacles[i].Active)
+                        spawnCounter = 0;
+                    }
+
+                    if (spawnCounter == 1000)
+                    {
+                        ObstacleSpawn();
+                    }
+                    
+
+                    foreach(Obstacles stuff in obstacles)
+                    {
+                        stuff.Move();
+                    }
+
+                    // loop to spawn the obstacles
+                    /* for (int i = 0; i < obstacles.Count; i++)
+                     {
+                         if (obstacles[i].Active)
+                         {
+
+                             rocks.Move();
+                         }
+                     }
+                     */
+                    //check for a collison
+                    foreach (Obstacles rock in obstacles)
+                    {
+                        if (rock.CheckCollision(playChar))
                         {
-                            ObstacleSpawn();
-                            rocks.Move();
+                            //remove a life
+                            playChar.NumLives -= 1;
+                            //deactivate obstacle
+                            rock.Active = false;
+                            if (playChar.NumLives <= 0)
+                            {
+                                // switch to the gameOver state
+                                currState = GameState.GameOver;
+                            }
                         }
                     }
 
-                    //check for a collison
-                    if (rocks.CheckCollision(playChar))
+                    //Update score based on speed and score modifier, and find new difficulty
+                    secondCounter++;
+                    tenSecondCounter++;
+                    if (secondCounter >= 60)
                     {
-                        //remove a life
-                        playChar.NumLives -= 1;
-                        if (playChar.NumLives <= 0)
-                        {
-                            // switch to the gameOver state
-                            currState = GameState.GameOver;
-                        }
+                        secondCounter = 0;
+                        scoreNum = Convert.ToInt32(score + speed * scoreModifier);                    
+                        tenSecondCounter++;
                     }
+                    if (tenSecondCounter >= 600)
+                    {
+                        tenSecondCounter = 0;
+                        difficultyUp = true;
+                    }
+                    if (difficultyUp == true)
+                    {
+                        difficultyUp = false;
+                        obstacleFrequency++;
+                        wall.Speed++;
+                        floor.Speed++;
+                        scoreModifier = scoreModifier + .1;
+                    }
+
+                    //Update score based on speed and score modifier                    
 
                     // call the process input method
                     ProcessInput();
@@ -291,11 +319,11 @@ namespace MoonMiner
                     //spriteBatch.Draw(rocks.Image,rocks.Pos,Color.White);
 
                     // loop to draw the obstacles
-                    for (int i = 0; i < obstacles.Count; i++)
+                    foreach(Obstacles rock in obstacles)
                     {
-                        if (obstacles[i].Active)
+                        if (rock.Active)
                         {
-                            spriteBatch.Draw(obstacles[i].Image, obstacles[i].Pos, Color.White);
+                            spriteBatch.Draw(rock.Image, rock.Pos, Color.White);
                         }
                     }
 
@@ -303,7 +331,7 @@ namespace MoonMiner
                     //draw lives
                     for (int i = 0; i < playChar.NumLives; i++)
                     {
-                        spriteBatch.Draw(lives, new Vector2(10 + (i * 40), 20), Color.White);
+                        spriteBatch.Draw(lives, new Vector2(10 + (i * 40), 45), Color.White);
                     }
                     break;
                 case GameState.Pause:
@@ -405,10 +433,10 @@ namespace MoonMiner
             {
 
                 // set the y values of the obstacles to random spots on the screen
-                int posY = rgen.Next(0, 301);
+                int posX = rgen.Next(1000, 2000);
 
                 // create a new collectible object and make them all be the same size
-                Obstacles rock = new Obstacles(new Rectangle(500,posY,30,30));
+                Obstacles rock = new Obstacles(new Rectangle(posX,370,30,30));
 
                 // set the image for the game object
                 rock.Image = rockImg;
@@ -421,8 +449,10 @@ namespace MoonMiner
         // create a method to reset the game objects
         public void Reset()
         {
-            rocks.Active = false;
-            rocks.Pos = new Rectangle(1000, 1000, 0, 0);
+            obstacles.Clear();
+            playChar.NumLives = 3;
+           // rocks.Active = false;
+            //rocks.Pos = new Rectangle(1000, 1000, 0, 0);
         }
 
 
