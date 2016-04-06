@@ -30,6 +30,7 @@ namespace MoonMiner
         Texture2D instruct;
         Texture2D pause;
         Texture2D gameover;
+        Vector2 selectorPosOver;
 
         // GameState variable
         GameState currState;
@@ -129,6 +130,8 @@ namespace MoonMiner
             selectorPos.Y = 275;
             selectorPosInstruct.X = 157;
             selectorPosInstruct.Y = 390;
+            selectorPosOver.X = 135;
+            selectorPosOver.Y = 382;
 
             base.Initialize();
         }
@@ -346,12 +349,33 @@ namespace MoonMiner
                     }
                     break;
                 case GameState.GameOver:
-                    if (SingleKeyPress(Keys.Enter))
+                    if (SingleKeyPress(Keys.Left))
                     {
-                        // return back to the menu
-                        currState = GameState.MainMenu;
-                        // reset the obstacles
-                        Reset();
+                        selectorPosOver.X = 135;
+                        selectorPosOver.Y = 382;
+                    }
+                    if (SingleKeyPress(Keys.Right))
+                    {
+                        selectorPosOver.X = 410;
+                        selectorPosOver.Y = 382;
+                    }
+                    if (selectorPosOver.X == 135)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            currState = GameState.MainMenu;
+                            // reset the obstacles
+                            Reset();
+                        }
+                    }
+                    if (selectorPosOver.X == 410)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            currState = GameState.Game;
+                            // reset the obstacles
+                            Reset();
+                        }
                     }
                     break;
             }
@@ -412,6 +436,7 @@ namespace MoonMiner
                     break;
                 case GameState.GameOver:
                     spriteBatch.Draw(gameover, menuPos, Color.White);
+                    spriteBatch.Draw(menuSelector, selectorPosOver, Color.White);
                     break;
             }
 
