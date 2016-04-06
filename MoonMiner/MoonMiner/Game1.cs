@@ -22,6 +22,14 @@ namespace MoonMiner
         Texture2D rockImg;
         SpriteFont font;
         Texture2D lives;
+        Texture2D menu;
+        Vector2 menuPos;
+        Texture2D menuSelector;
+        Vector2 selectorPos;
+        Vector2 selectorPosInstruct;
+        Texture2D instruct;
+        Texture2D pause;
+        Texture2D gameover;
 
         // GameState variable
         GameState currState;
@@ -113,6 +121,14 @@ namespace MoonMiner
 
             //set the obstacles to be active
            //rocks.Active = true;
+           
+           //Menu position
+            menuPos.X = 0;
+            menuPos.Y = 0;
+            selectorPos.X = 150;
+            selectorPos.Y = 275;
+            selectorPosInstruct.X = 157;
+            selectorPosInstruct.Y = 390;
 
             base.Initialize();
         }
@@ -134,6 +150,11 @@ namespace MoonMiner
             font = Content.Load<SpriteFont>("Arial");
             rockImg = Content.Load<Texture2D>("boxChar");
             lives = Content.Load<Texture2D>("TempLife");
+            menu = Content.Load<Texture2D>("Main Menu");
+            instruct = Content.Load<Texture2D>("Instructions");
+            menuSelector = Content.Load<Texture2D>("SelectorTool");
+            pause = Content.Load<Texture2D>("Pause");
+            gameover = Content.Load<Texture2D>("GameOver");
 
             //load images into floor objects
             wall.Image = background;
@@ -174,17 +195,66 @@ namespace MoonMiner
             // create a gameState switch to detect the game State
             switch (currState)
             {
-                case GameState.MainMenu: if (SingleKeyPress(Keys.Enter))
+                case GameState.MainMenu: 
+                if (SingleKeyPress(Keys.Right))
                     {
-                        // switch the state to HowToPlay
-                        currState = GameState.HowToPlay;
+                        selectorPos.X = 360;
+                        selectorPos.Y = 275;
+                    }
+                    if (SingleKeyPress(Keys.Left))
+                    {
+                        selectorPos.X = 150;
+                        selectorPos.Y = 275;
+                    }
+                    if (SingleKeyPress(Keys.Up))
+                    {
+                        selectorPos.X = 150;
+                        selectorPos.Y = 275;
+                    }
+                    if (SingleKeyPress(Keys.Down))
+                    {
+                        selectorPos.X = 310;
+                        selectorPos.Y = 367;
+                    }
+                    if (selectorPos.X == 150)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            currState = GameState.Game;
+                        }
+                    }
+                    if (selectorPos.X == 360)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            currState = GameState.HowToPlay;
+                        }
                     }
                         break;
                 case GameState.HowToPlay:
-                    if (SingleKeyPress(Keys.Enter))
+                    if (SingleKeyPress(Keys.Left))
                     {
-                        // switch the state to the Game
-                        currState = GameState.Game;
+                        selectorPosInstruct.X = 157;
+                        selectorPosInstruct.Y = 390;
+                    }
+                    if (SingleKeyPress(Keys.Right))
+                    {
+                        selectorPosInstruct.X = 455;
+                        selectorPosInstruct.Y = 390;
+                    }
+                    if (selectorPosInstruct.X == 157)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            currState = GameState.MainMenu;
+                        }
+                    }
+                    if (selectorPosInstruct.X == 455)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            currState = GameState.Game;
+                        }
                     }
                     break;
                 case GameState.Game:
@@ -242,7 +312,7 @@ namespace MoonMiner
                     if (secondCounter >= 60)
                     {
                         secondCounter = 0;
-                        score = score + speed * scoreModifier;
+                        scoreNum = Convert.ToInt32(scoreNum + speed * scoreModifier);
                         tenSecondCounter++;
                     }
                     if (tenSecondCounter >= 600)
@@ -258,15 +328,7 @@ namespace MoonMiner
                         floor.Speed++;
                         scoreModifier = scoreModifier + .1;
                     }
-
-                    //Update score based on speed and score modifier
-                    secondCounter++;
-                    if (secondCounter >= 60)
-                    {
-                        secondCounter = 0;
-                        scoreNum = Convert.ToInt32(score + speed * scoreModifier);
-                    }
-
+                    
                     // call the process input method
                     ProcessInput();
                     if (SingleKeyPress(Keys.Enter))
@@ -315,11 +377,12 @@ namespace MoonMiner
             switch(currState)
             {
                 case GameState.MainMenu:
-                    spriteBatch.DrawString(font, "MOON MINER TEST TITLE SCREEN", new Vector2(300,300), Color.White);
+                    spriteBatch.Draw(menu, menuPos, Color.White);
+                    spriteBatch.Draw(menuSelector, selectorPos, Color.White);
                     break;
                 case GameState.HowToPlay:
-                    spriteBatch.DrawString(font, "HOW TO PLAY", new Vector2(300, 300), Color.White);
-                    spriteBatch.DrawString(font, "Press up arrow to jump and down to duck. That is all. Press enter to begin.", new Vector2(100, 400), Color.White);
+                    spriteBatch.Draw(instruct, menuPos, Color.White);
+                    spriteBatch.Draw(menuSelector, selectorPosInstruct, Color.White);
                     break;
                 case GameState.Game:
                     wall.Draw(spriteBatch);
@@ -345,10 +408,10 @@ namespace MoonMiner
                     }
                     break;
                 case GameState.Pause:
-                    spriteBatch.DrawString(font, "GAME IS PAUSED", new Vector2(300, 300), Color.White);
+                    spriteBatch.Draw(pause, menuPos, Color.White);
                     break;
                 case GameState.GameOver:
-                    spriteBatch.DrawString(font, "GAME OVER", new Vector2(300, 300), Color.White);
+                    spriteBatch.Draw(gameover, menuPos, Color.White);
                     break;
             }
 
