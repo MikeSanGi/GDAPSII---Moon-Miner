@@ -34,6 +34,7 @@ namespace MoonMiner
         double scoreModifier = .5;
         int speed = 1;
         double score = 0;
+        int scoreNum = 0;
         double obstacleFrequency = 1;
         bool difficultyUp = false;
         int secondCounter;
@@ -83,7 +84,7 @@ namespace MoonMiner
             catch (Exception)
             {
                 obstacleFrequency = 1;
-                speed = 1;
+                speed = 4;
                 scoreModifier = 0.5; 
             }
             
@@ -168,7 +169,7 @@ namespace MoonMiner
             if (secondCounter >= 60)
             {
                 secondCounter = 0;
-                score = score + speed * scoreModifier;
+                scoreNum = Convert.ToInt32(score + speed * scoreModifier);
                 tenSecondCounter++;
             }
             if (tenSecondCounter >= 600)
@@ -228,15 +229,6 @@ namespace MoonMiner
                         }
                     }
 
-
-
-                    //Update score based on speed and score modifier
-                    secondCounter++;
-                    if (secondCounter >= 60)
-                    {
-                        secondCounter = 0;
-                        score = score + speed * scoreModifier;
-                    }
                     // call the process input method
                     ProcessInput();
                     if (SingleKeyPress(Keys.Enter))
@@ -307,7 +299,7 @@ namespace MoonMiner
                         }
                     }
 
-                    spriteBatch.DrawString(font, "Score: " + score, new Vector2(10, 10), Color.White);
+                    spriteBatch.DrawString(font, "Score: " + scoreNum, new Vector2(10, 10), Color.White);
                     //draw lives
                     for (int i = 0; i < playChar.NumLives; i++)
                     {
