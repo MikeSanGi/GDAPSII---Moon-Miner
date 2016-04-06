@@ -69,14 +69,23 @@ namespace MoonMiner
             // TODO: Add your initialization logic here
         
             //Initialize the difficulty
-            reader = new StreamReader("../../../../../MoonMiner - External Tool/MoonMiner - External Tool/bin/Debug/difficulty.txt");
-            string difficultyBase = reader.ReadLine();
-            reader.Close();
-            string[] difficultyExtraction = difficultyBase.Split(' ');
-            int[] difficultyConverted = System.Array.ConvertAll<string, int>(difficultyExtraction, int.Parse);
-            obstacleFrequency = difficultyConverted[0];
-            speed = difficultyConverted[1];
-            scoreModifier = difficultyConverted[2];
+            try 
+            {
+                reader = new StreamReader("../../../../../MoonMiner - External Tool/MoonMiner - External Tool/bin/Debug/difficulty.txt");
+                string difficultyBase = reader.ReadLine();
+                reader.Close();
+                string[] difficultyExtraction = difficultyBase.Split(' ');
+                int[] difficultyConverted = System.Array.ConvertAll<string, int>(difficultyExtraction, int.Parse);
+                obstacleFrequency = difficultyConverted[0];
+                speed = difficultyConverted[1];
+                scoreModifier = difficultyConverted[2];
+            }
+            catch (Exception)
+            {
+                obstacleFrequency = 1;
+                speed = 1;
+                scoreModifier = 0.5; 
+            }
             
             //create character objects
             playChar = new Player(new Rectangle(1000, 300,100,100));
