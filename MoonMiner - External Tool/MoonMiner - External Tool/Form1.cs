@@ -31,7 +31,7 @@ namespace MoonMiner___External_Tool
 
             //Set bar values
             brObstacleFrequency.Value = 1;
-            brSpeed.Value = 1;
+            brSpeed.Value = 4;
 
             //Write to file
             string difficultyText = brObstacleFrequency.Value + " " + brSpeed.Value + " " + scoreModifier;
