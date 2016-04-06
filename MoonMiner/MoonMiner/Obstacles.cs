@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace MoonMinerExecutable
+namespace MoonMiner
 {
     class Obstacles
     {
@@ -66,7 +66,7 @@ namespace MoonMinerExecutable
         public bool CheckCollision(Player plr)
         {
             // check to see if one rectangle intersects the other
-            if(plr.Pos.Intersects(Pos))
+            if(plr.Pos.Intersects(Pos) && active == true)
             {
                 return true;
             }

@@ -33,7 +33,9 @@ namespace MoonMiner
          //Creating attributes for difficulty (It's set on 'Easy' by default)
         double scoreModifier = .5;
         int scoreNum = 0;
+        int initialSpeed;
         int speed = 4;
+        double initialMod;
         double score = 0;
         double obstacleFrequency = 1;
         bool difficultyUp = false;
@@ -79,7 +81,7 @@ namespace MoonMiner
                 string[] difficultyExtraction = difficultyBase.Split(' ');
                 int[] difficultyConverted = System.Array.ConvertAll<string, int>(difficultyExtraction, int.Parse);
                 obstacleFrequency = difficultyConverted[0];
-                speed = difficultyConverted[1];
+                speed = difficultyConverted[1];                
                 scoreModifier = difficultyConverted[2];
             }
             catch (Exception)
@@ -88,7 +90,9 @@ namespace MoonMiner
                 speed = 4;
                 scoreModifier = 0.5; 
             }
-            
+            initialSpeed = speed;
+            initialMod = scoreModifier;
+
             //create character objects
             playChar = new Player(new Rectangle(1000, 300,100,100));
 
@@ -189,12 +193,12 @@ namespace MoonMiner
                     floor.MoveFloor();
 
                     spawnCounter++;
-                    if(spawnCounter > 1000)
+                    if(spawnCounter > 50)
                     {
                         spawnCounter = 0;
                     }
 
-                    if (spawnCounter == 1000)
+                    if (spawnCounter == 50)
                     {
                         ObstacleSpawn();
                     }
@@ -238,7 +242,7 @@ namespace MoonMiner
                     if (secondCounter >= 60)
                     {
                         secondCounter = 0;
-                        scoreNum = Convert.ToInt32(score + speed * scoreModifier);                    
+                        score = score + speed * scoreModifier;
                         tenSecondCounter++;
                     }
                     if (tenSecondCounter >= 600)
@@ -255,7 +259,13 @@ namespace MoonMiner
                         scoreModifier = scoreModifier + .1;
                     }
 
-                    //Update score based on speed and score modifier                    
+                    //Update score based on speed and score modifier
+                    secondCounter++;
+                    if (secondCounter >= 60)
+                    {
+                        secondCounter = 0;
+                        scoreNum = Convert.ToInt32(score + speed * scoreModifier);
+                    }
 
                     // call the process input method
                     ProcessInput();
@@ -429,7 +439,7 @@ namespace MoonMiner
             Random rgen = new Random();
 
             // loop to create the collectibles
-            for (int i = 0; i < numObstacles; i++)
+            //for (int i = 0; i < numObstacles; i++)
             {
 
                 // set the y values of the obstacles to random spots on the screen
@@ -451,8 +461,13 @@ namespace MoonMiner
         {
             obstacles.Clear();
             playChar.NumLives = 3;
-           // rocks.Active = false;
-            //rocks.Pos = new Rectangle(1000, 1000, 0, 0);
+            //reset score
+            scoreNum = 0;
+            //reset speed
+            speed = initialSpeed;
+            //reset modifier
+            scoreModifier = initialMod;
+           
         }
 
 
