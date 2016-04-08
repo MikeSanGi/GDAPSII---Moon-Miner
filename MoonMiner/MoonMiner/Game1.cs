@@ -282,31 +282,18 @@ namespace MoonMiner
                         stuff.Move();
                     }
 
-                    // loop to spawn the obstacles
-                    /* for (int i = 0; i < obstacles.Count; i++)
-                     {
-                         if (obstacles[i].Active)
-                         {
-
-                             rocks.Move();
-                         }
-                     }
-                     */
+                   
                     //check for a collison
                     foreach (Obstacles rock in obstacles)
                     {
-                        if (rock.CheckCollision(playChar))
-                        {
-                            //remove a life
-                            playChar.NumLives -= 1;
-                            //deactivate obstacle
-                            rock.Active = false;
-                            if (playChar.NumLives <= 0)
-                            {
-                                // switch to the gameOver state
-                                currState = GameState.GameOver;
-                            }
-                        }
+                        rock.CheckCollision(playChar);                  
+                    }
+
+                    //gameover state
+                    if (playChar.NumLives <= 0)
+                    {
+                        // switch to the gameOver state
+                        currState = GameState.GameOver;
                     }
 
                     //Update score based on speed and score modifier, and find new difficulty
@@ -526,22 +513,32 @@ namespace MoonMiner
             // create random number generator
             Random rgen = new Random();
 
-            // loop to create the collectibles
-            //for (int i = 0; i < numObstacles; i++)
+            int enemy = rgen.Next(1, 3);
+
+            switch(enemy)
             {
-
-                // set the y values of the obstacles to random spots on the screen
-                int posX = rgen.Next(1000, 2000);
-
-                // create a new collectible object and make them all be the same size
-                Obstacles rock = new Obstacles(new Rectangle(posX,370,30,30));
-
-                // set the image for the game object
-                rock.Image = rockImg;
+                case 1:
+                    {
+                        //create a bat
+                        Bat rock = new Bat();
+                        // set the image for the game object
+                        rock.Image = rockImg;
+                        //add to list
+                        obstacles.Add(rock);
+                        break;
+                    }
+                case 2:
+                    {
+                        Rocks rock = new Rocks();
+                        rock.Image = rockImg;
+                        obstacles.Add(rock);
+                        break;
+                    }
+            }
 
                 // add the collectible to the list
-                obstacles.Add(rock);
-            }
+           
+            
         }
 
         // create a method to reset the game objects

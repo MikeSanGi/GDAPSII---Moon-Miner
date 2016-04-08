@@ -14,6 +14,7 @@ namespace MoonMiner
         private Texture2D image;
         private Rectangle pos;
         private bool active;
+        private int speed;
 
         //properties
         public bool Active
@@ -33,6 +34,11 @@ namespace MoonMiner
             set { pos = value; }
 
         }
+        public int Speed
+        {
+            get { return speed; }
+            set { speed = value; }
+        }
         // create X and Y properties for easier access to the rectangle position
         public int X
         {
@@ -46,34 +52,33 @@ namespace MoonMiner
         }
 
         //constructor
-        public Obstacles(Rectangle position)
-        {
-            Pos = position;
+        public Obstacles()
+        {            
             active = true;
+            pos = new Rectangle(2000, 370, 30, 30);
+            speed = 5;
         }
 
         //Movement method
         public void Move()
         {
-            pos.X -= 5;
+            pos.X -= speed;
             if (pos.X == -100)
             {
-                pos.X = 500;
+                active = false;                
             }
         }
 
         //Collision Detection Method
-        public bool CheckCollision(Player plr)
+        public void CheckCollision(Player plr)
         {
             // check to see if one rectangle intersects the other
             if(plr.Pos.Intersects(Pos) && active == true)
             {
-                return true;
+                plr.NumLives -=1;
+                active = false;
             }
-            else
-            {
-                return false;
-            }
+            
         }
 
         //draw method
