@@ -15,6 +15,7 @@ namespace MoonMiner
         private Rectangle pos;
         private bool active;
         private int speed;
+        private int spMod = 0;
 
         //properties
         public bool Active
@@ -52,17 +53,18 @@ namespace MoonMiner
         }
 
         //constructor
-        public Obstacles()
+        public Obstacles(int mod)
         {            
             active = true;
             pos = new Rectangle(2000, 370, 30, 30);
             speed = 5;
+            spMod = mod;
         }
 
         //Movement method
         public void Move()
         {
-            pos.X -= speed;
+            pos.X -= (Speed + spMod);
             if (pos.X == -100)
             {
                 active = false;                

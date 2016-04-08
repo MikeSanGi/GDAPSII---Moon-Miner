@@ -11,7 +11,7 @@ namespace MoonMiner
     class Bat:Obstacles
     {
         //constructor
-        public Bat():base()
+        public Bat(int mod):base(mod)
         {
             Speed = 8;
             Pos = new Rectangle(2000, 300, 50, 40);

@@ -11,7 +11,7 @@ namespace MoonMiner
     class Rocks:Obstacles
     {       
         //constructor
-        public Rocks():base()
+        public Rocks(int mod):base(mod)
         {
             Speed = 7;
             Pos = new Rectangle(2000, 370, 30, 30);
