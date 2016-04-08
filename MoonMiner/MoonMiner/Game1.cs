@@ -20,6 +20,7 @@ namespace MoonMiner
         Texture2D player;        
         Texture2D floorImg;
         Texture2D rockImg;
+        Texture2D battery;
         SpriteFont font;
         Texture2D lives;
         Texture2D menu;
@@ -158,6 +159,7 @@ namespace MoonMiner
             menuSelector = Content.Load<Texture2D>("SelectorTool");
             pause = Content.Load<Texture2D>("Pause");
             gameover = Content.Load<Texture2D>("GameOver");
+            battery = Content.Load<Texture2D>("battery");
 
             //load images into floor objects
             wall.Image = background;
@@ -411,11 +413,18 @@ namespace MoonMiner
                         }
                     }
 
+                    //Draws Score to the screen
+                    spriteBatch.DrawString(font, "Score: " + scoreNum, new Vector2(12, 12), Color.Black);
                     spriteBatch.DrawString(font, "Score: " + scoreNum, new Vector2(10, 10), Color.White);
+                    
+                    //draws Battery to house lives
+                    spriteBatch.Draw(battery, new Vector2(12, 417), Color.Black);
+                    spriteBatch.Draw(battery, new Vector2(10, 415), Color.White);
+                    
                     //draw lives
                     for (int i = 0; i < playChar.NumLives; i++)
                     {
-                        spriteBatch.Draw(lives, new Vector2(10 + (i * 40), 45), Color.White);
+                        spriteBatch.Draw(lives, new Vector2(19 + ((i * 35)), 425), Color.White);
                     }
                     break;
                 case GameState.Pause:
