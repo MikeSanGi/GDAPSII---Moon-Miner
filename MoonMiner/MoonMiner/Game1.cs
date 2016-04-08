@@ -47,6 +47,7 @@ namespace MoonMiner
         int scoreNum = 0;
         int initialSpeed;
         int speed = 4;
+        int speedMod = 0;
         double initialMod;
         double score = 0;
         string highscoreName;
@@ -342,6 +343,7 @@ namespace MoonMiner
                         obstacleFrequency++;
                         wall.Speed++;
                         floor.Speed++;
+                        speedMod++;
                         scoreModifier = scoreModifier + .1;
                     }
                     
@@ -596,7 +598,7 @@ namespace MoonMiner
                 case 1:
                     {
                         //create a bat
-                        Bat rock = new Bat();
+                        Bat rock = new Bat(speedMod);
                         // set the image for the game object
                         rock.Image = rockImg;
                         //add to list
@@ -605,7 +607,7 @@ namespace MoonMiner
                     }
                 case 2:
                     {
-                        Rocks rock = new Rocks();
+                        Rocks rock = new Rocks(speedMod);
                         rock.Image = rockImg;
                         obstacles.Add(rock);
                         break;
@@ -628,6 +630,7 @@ namespace MoonMiner
             speed = initialSpeed;
             //reset modifier
             scoreModifier = initialMod;
+            speedMod = 0;
            
         }
 
