@@ -11,7 +11,7 @@ namespace MoonMiner
     /// This is the main type for your game.
     /// </summary>
     /// 
-    enum GameState { MainMenu, HowToPlay, Game, Pause, GameOver };
+    enum GameState { MainMenu, HowToPlay, Game, Pause, GameOver, Highscore };
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
@@ -32,6 +32,8 @@ namespace MoonMiner
         Texture2D pause;
         Texture2D gameover;
         Vector2 selectorPosOver;
+        Texture2D highscore;
+        Vector2 selectorPosHigh;
 
         // GameState variable
         GameState currState;
@@ -47,12 +49,18 @@ namespace MoonMiner
         int speed = 4;
         double initialMod;
         double score = 0;
+        string highscoreName;
         double obstacleFrequency = 1;
         bool difficultyUp = false;
         int secondCounter;
         int spawnCounter = 0;
         int tenSecondCounter;
         StreamReader reader;
+
+        //Highscore
+        List<int> highscoreList;
+        List<string> highscoreNameList;
+        bool highscorePrint = false;
 
         // create a list of collectibles
         List<Obstacles> obstacles;
@@ -133,6 +141,13 @@ namespace MoonMiner
             selectorPosInstruct.Y = 390;
             selectorPosOver.X = 135;
             selectorPosOver.Y = 382;
+            selectorPosHigh.X = 135;
+            selectorPosHigh.Y = 382;
+
+            //Highscore list
+            highscoreList = new List<int>();
+            highscoreList.Add(0);
+            highscoreNameList = new List<string>();
 
             base.Initialize();
         }
@@ -160,6 +175,7 @@ namespace MoonMiner
             pause = Content.Load<Texture2D>("Pause");
             gameover = Content.Load<Texture2D>("GameOver");
             battery = Content.Load<Texture2D>("battery");
+            highscore = Content.Load<Texture2D>("Highscore");
 
             //load images into floor objects
             wall.Image = background;
@@ -228,6 +244,13 @@ namespace MoonMiner
                             currState = GameState.Game;
                         }
                     }
+                    if (selectorPos.X == 310)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            currState = GameState.Highscore;
+                        }
+                    }
                     if (selectorPos.X == 360)
                     {
                         if (SingleKeyPress(Keys.Enter))
@@ -263,6 +286,7 @@ namespace MoonMiner
                     }
                     break;
                 case GameState.Game:
+                highscorePrint = false;
                     //call floorobject movement
                     wall.MoveFloor();
                     floor.MoveFloor();
@@ -338,6 +362,35 @@ namespace MoonMiner
                     }
                     break;
                 case GameState.GameOver:
+                if (highscorePrint == false)
+                    {
+                        for (int i = 0; i < highscoreList.Count; i++)
+                        {
+                            if (scoreNum > highscoreList.IndexOf(i)) 
+                            {
+                                highscoreList.Insert(i, scoreNum);
+                                break;
+                            }
+                        }
+                        highscoreList.Sort();
+                        highscorePrint = true;
+
+                        StreamWriter output = new StreamWriter("highscore.txt");
+                        foreach (int element in highscoreList)
+                        {
+                            output.WriteLine(element);
+                        }
+                        output.Close();
+
+                        /*List<string> highscoreListStrings = new List<string>();
+                        for (int i = 0; i < highscoreList.Count; i++)
+                        {
+                            highscoreListStrings[i] = Convert.ToString(highscoreList[i]);
+                        }
+                        System.IO.File.WriteAllLines("highscore.txt", highscoreListStrings);
+                        */
+
+                    }
                     if (SingleKeyPress(Keys.Left))
                     {
                         selectorPosOver.X = 135;
@@ -364,6 +417,15 @@ namespace MoonMiner
                             currState = GameState.Game;
                             // reset the obstacles
                             Reset();
+                        }
+                    }
+                    break;
+                    case GameState.Highscore:
+                    if (selectorPosHigh.X == 135)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            currState = GameState.MainMenu;
                         }
                     }
                     break;
@@ -399,8 +461,8 @@ namespace MoonMiner
                     break;
                 case GameState.Game:
                     wall.Draw(spriteBatch);
-                    floor.Draw(spriteBatch);
                     playChar.Draw(spriteBatch);
+                    floor.Draw(spriteBatch);
                     //rocks.Draw(spriteBatch);
                     //spriteBatch.Draw(rocks.Image,rocks.Pos,Color.White);
 
@@ -433,6 +495,10 @@ namespace MoonMiner
                 case GameState.GameOver:
                     spriteBatch.Draw(gameover, menuPos, Color.White);
                     spriteBatch.Draw(menuSelector, selectorPosOver, Color.White);
+                    break;
+                case GameState.Highscore:
+                    spriteBatch.Draw(highscore, menuPos, Color.White);
+                    spriteBatch.Draw(menuSelector, selectorPosHigh, Color.White);
                     break;
             }
 
@@ -480,11 +546,12 @@ namespace MoonMiner
                 player = Content.Load<Texture2D>("Char2SpriteSheet");
                 playChar.Duck = true;
                 playChar.Image = player;
-                while (playChar.PosY <= 300 && playChar.PlayerJump == false)
+                while (playChar.PosY <= 300 && playChar.PlayerJump == false && playChar.Duck == true)
                 {
                     playChar.PosY += 50;
-                    playChar.Pos = new Rectangle(playChar.PosX, playChar.PosY,100,50);                    
-                }         
+                    playChar.Pos = new Rectangle(playChar.PosX, playChar.PosY,100,100);                    
+                }
+                playChar.Duck = false;        
             }
 
             //If no keys are pressed, makes sure all states are reverted to default
