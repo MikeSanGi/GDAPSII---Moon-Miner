@@ -59,6 +59,14 @@ namespace MoonMiner
         int spawnCounter = 0;
         int tenSecondCounter;
         StreamReader reader;
+        int printedScore1;
+        int printedScore2;
+        int printedScore3;
+        int printedScore4;
+        int printedScore5;
+        int printedScore6;
+        int printedScore7;
+        int printedScore8;
 
         //Highscore
         List<int> highscoreList;
@@ -155,7 +163,34 @@ namespace MoonMiner
             //Highscore list
             highscoreList = new List<int>();
             highscoreList.Add(0);
-            highscoreNameList = new List<string>();
+            highscoreList.Add(0);
+            highscoreList.Add(0);
+            highscoreList.Add(0);
+            highscoreList.Add(0);
+            highscoreList.Add(0);
+            highscoreList.Add(0);
+            highscoreList.Add(0);
+
+            try
+            {
+                using (var reader = new StreamReader("highscore.txt"))
+                {
+                    string line;
+                    int convertedLine;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        convertedLine = Convert.ToInt32(line);
+                        highscoreList.Add(convertedLine);
+                    }
+                }
+                reader.Close();
+                highscoreNameList = new List<string>();
+    
+            }
+            catch (Exception)
+            {
+                
+            }
 
             base.Initialize();
         }
@@ -394,13 +429,14 @@ namespace MoonMiner
                         }
                         output.Close();
 
-                        /*List<string> highscoreListStrings = new List<string>();
-                        for (int i = 0; i < highscoreList.Count; i++)
-                        {
-                            highscoreListStrings[i] = Convert.ToString(highscoreList[i]);
-                        }
-                        System.IO.File.WriteAllLines("highscore.txt", highscoreListStrings);
-                        */
+                    printedScore1 = highscoreList[highscoreList.Count - 1];
+                    printedScore2 = highscoreList[highscoreList.Count - 2];
+                    printedScore3 = highscoreList[highscoreList.Count - 3];
+                    printedScore4 = highscoreList[highscoreList.Count - 4];
+                    printedScore5 = highscoreList[highscoreList.Count - 5];
+                    printedScore6 = highscoreList[highscoreList.Count - 6];
+                    printedScore7 = highscoreList[highscoreList.Count - 7];
+                    printedScore8 = highscoreList[highscoreList.Count - 8];
 
                     }
                     if (SingleKeyPress(Keys.Left))
@@ -506,10 +542,28 @@ namespace MoonMiner
                     break;
                 case GameState.GameOver:
                     spriteBatch.Draw(gameover, menuPos, Color.White);
+                    spriteBatch.DrawString(font, "Final Score: " + scoreNum, new Vector2(302, 252), Color.Black);
+                    spriteBatch.DrawString(font, "Final Score: " + scoreNum, new Vector2(300, 250), Color.White);
                     spriteBatch.Draw(menuSelector, selectorPosOver, Color.White);
                     break;
                 case GameState.Highscore:
                     spriteBatch.Draw(highscore, menuPos, Color.White);
+                    spriteBatch.DrawString(font, "1: " + printedScore1, new Vector2(202, 212), Color.Black);
+                    spriteBatch.DrawString(font, "1: " + printedScore1, new Vector2(200, 210), Color.White);
+                    spriteBatch.DrawString(font, "2: " + printedScore2, new Vector2(202, 242), Color.Black);
+                    spriteBatch.DrawString(font, "2: " + printedScore2, new Vector2(200, 240), Color.White);
+                    spriteBatch.DrawString(font, "3: " + printedScore3, new Vector2(202, 272), Color.Black);
+                    spriteBatch.DrawString(font, "3: " + printedScore3, new Vector2(200, 270), Color.White);
+                    spriteBatch.DrawString(font, "4: " + printedScore4, new Vector2(202, 302), Color.Black);
+                    spriteBatch.DrawString(font, "4: " + printedScore4, new Vector2(200, 300), Color.White);
+                    spriteBatch.DrawString(font, "5: " + printedScore5, new Vector2(452, 212), Color.Black);
+                    spriteBatch.DrawString(font, "5: " + printedScore5, new Vector2(450, 210), Color.White);
+                    spriteBatch.DrawString(font, "6: " + printedScore6, new Vector2(452, 242), Color.Black);
+                    spriteBatch.DrawString(font, "6: " + printedScore6, new Vector2(450, 240), Color.White);
+                    spriteBatch.DrawString(font, "7: " + printedScore7, new Vector2(452, 272), Color.Black);
+                    spriteBatch.DrawString(font, "7: " + printedScore7, new Vector2(450, 270), Color.White);
+                    spriteBatch.DrawString(font, "8: " + printedScore8, new Vector2(452, 302), Color.Black);
+                    spriteBatch.DrawString(font, "8: " + printedScore8, new Vector2(450, 300), Color.White);
                     spriteBatch.Draw(menuSelector, selectorPosHigh, Color.White);
                     break;
             }
