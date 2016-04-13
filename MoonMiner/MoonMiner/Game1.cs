@@ -49,7 +49,7 @@ namespace MoonMiner
         int scoreNum = 0;
         int initialSpeed;
         int speed = 4;
-        int speedMod = 0;
+        int speedMod;
         double initialMod;
         double score = 0;
         string highscoreName;
@@ -116,6 +116,7 @@ namespace MoonMiner
                 speed = 4;
                 scoreModifier = 0.5; 
             }
+            speedMod = speed;
             initialSpeed = speed;
             initialMod = scoreModifier;
 
@@ -655,7 +656,7 @@ namespace MoonMiner
             floor.Speed = speed;
             //reset modifier
             scoreModifier = initialMod;
-            speedMod = 0;
+            speedMod = speed;
            
         }
 

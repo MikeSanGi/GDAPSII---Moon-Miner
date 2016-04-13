@@ -13,7 +13,7 @@ namespace MoonMiner
         //constructor
         public Collectible(int mod):base(mod)
         {
-            Speed = 10;
+            Speed = 6;
             Pos = new Rectangle(2000, 220, 20, 20);
         }
 

@@ -13,7 +13,7 @@ namespace MoonMiner
         //constructor
         public Rocks(int mod):base(mod)
         {
-            Speed = 7;
+            Speed = 3;
             Pos = new Rectangle(2000, 370, 30, 30);
         }
     }

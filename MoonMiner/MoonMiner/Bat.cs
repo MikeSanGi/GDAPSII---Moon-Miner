@@ -13,8 +13,8 @@ namespace MoonMiner
         //constructor
         public Bat(int mod):base(mod)
         {
-            Speed = 8;
-            Pos = new Rectangle(2000, 300, 50, 40);
+            Speed = 4;
+            Pos = new Rectangle(2000, 300, 40, 30);
         }
     }
 }
