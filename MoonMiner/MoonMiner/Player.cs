@@ -16,7 +16,8 @@ namespace MoonMiner
         private Rectangle pos;
         private int posY;
         private int posX = 50;
-        private int numLives;     
+        private int numLives;
+        private int numCol; 
 
         //jump attributes
         private int baseY = 300;
@@ -49,6 +50,7 @@ namespace MoonMiner
         {
             pos = ps;
             numLives = 3;
+            numCol = 0;
         }
 
         //properties
@@ -96,6 +98,12 @@ namespace MoonMiner
         {
             get { return numLives; }
             set { numLives = value; }
+        }
+
+        public int NumCol
+        {
+            get { return numCol; }
+            set { numCol = value; }
         }
 
         //Jump method

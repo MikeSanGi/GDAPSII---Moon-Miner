@@ -72,7 +72,7 @@ namespace MoonMiner
         }
 
         //Collision Detection Method
-        public void CheckCollision(Player plr)
+        public virtual void CheckCollision(Player plr, Game1 gm)
         {
             // check to see if one rectangle intersects the other
             if(plr.Pos.Intersects(Pos) && active == true)

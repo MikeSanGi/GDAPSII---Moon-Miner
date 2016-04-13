@@ -34,6 +34,8 @@ namespace MoonMiner
         Vector2 selectorPosOver;
         Texture2D highscore;
         Vector2 selectorPosHigh;
+        Texture2D gems;
+
 
         // GameState variable
         GameState currState;
@@ -74,6 +76,11 @@ namespace MoonMiner
         Player playChar;
         Obstacles rocks;
 
+        public int ScoreNum
+        {
+            get { return scoreNum; }
+            set { scoreNum = value; }
+        }
 
         public Game1()
         {
@@ -177,6 +184,8 @@ namespace MoonMiner
             gameover = Content.Load<Texture2D>("GameOver");
             battery = Content.Load<Texture2D>("battery");
             highscore = Content.Load<Texture2D>("Highscore");
+            gems = Content.Load<Texture2D>("gem");
+
 
             //load images into floor objects
             wall.Image = background;
@@ -301,6 +310,7 @@ namespace MoonMiner
                     if (spawnCounter == 50)
                     {
                         ObstacleSpawn();
+                        GemSpawn();
                     }
                     
 
@@ -313,7 +323,7 @@ namespace MoonMiner
                     //check for a collison
                     foreach (Obstacles rock in obstacles)
                     {
-                        rock.CheckCollision(playChar);                  
+                        rock.CheckCollision(playChar, this);                  
                     }
 
                     //gameover state
@@ -593,7 +603,7 @@ namespace MoonMiner
 
             int enemy = rgen.Next(1, 3);
 
-            switch(enemy)
+            switch (enemy)
             {
                 case 1:
                     {
@@ -612,11 +622,24 @@ namespace MoonMiner
                         obstacles.Add(rock);
                         break;
                     }
+                
             }
 
-                // add the collectible to the list
-           
-            
+            // add the collectible to the list
+
+
+        }
+
+        public void GemSpawn()
+        {
+            Random rgen = new Random();
+            int chance = rgen.Next(0, 1001);
+            if (chance > 900)
+            {
+                Collectible gem = new Collectible(speedMod);
+                gem.Image = gems;
+                obstacles.Add(gem);
+            }
         }
 
         // create a method to reset the game objects
@@ -628,6 +651,8 @@ namespace MoonMiner
             scoreNum = 0;
             //reset speed
             speed = initialSpeed;
+            wall.Speed = speed;
+            floor.Speed = speed;
             //reset modifier
             scoreModifier = initialMod;
             speedMod = 0;
