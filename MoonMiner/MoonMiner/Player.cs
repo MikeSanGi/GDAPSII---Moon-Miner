@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 
-namespace MoonMiner
+namespace MoonMinerExecutable
 {
     class Player
     {

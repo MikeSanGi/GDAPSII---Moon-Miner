@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections.Generic; // needed for Lists
 using System; // needed for RNG
 
-namespace MoonMiner
+namespace MoonMinerExecutable
 {
     /// <summary>
     /// This is the main type for your game.
@@ -36,6 +36,8 @@ namespace MoonMiner
         Vector2 selectorPosHigh;
         Texture2D gems;
 
+        // create an enemy variable
+        int enemy;
 
         // GameState variable
         GameState currState;
@@ -212,7 +214,7 @@ namespace MoonMiner
             floorImg = Content.Load<Texture2D>("Floor");
             font = Content.Load<SpriteFont>("Arial");
             rockImg = Content.Load<Texture2D>("boxChar");
-            lives = Content.Load<Texture2D>("TempLife");
+            lives = Content.Load<Texture2D>("gem");
             menu = Content.Load<Texture2D>("Main Menu");
             instruct = Content.Load<Texture2D>("Instructions");
             menuSelector = Content.Load<Texture2D>("SelectorTool");
@@ -337,13 +339,17 @@ namespace MoonMiner
                     wall.MoveFloor();
                     floor.MoveFloor();
 
+                    // create the random object here
+                    Random rgen = new Random();
+                    enemy = rgen.Next(1, 5);
+
                     spawnCounter++;
-                    if(spawnCounter > 50)
+                    if(spawnCounter > 50-speedMod)
                     {
                         spawnCounter = 0;
                     }
 
-                    if (spawnCounter == 50)
+                    if (spawnCounter == 50-speedMod)
                     {
                         ObstacleSpawn();
                         GemSpawn();
@@ -654,20 +660,27 @@ namespace MoonMiner
         public void ObstacleSpawn()
         {
             // create random number generator
-            Random rgen = new Random();
+            //Random rgen = new Random();
 
-            int enemy = rgen.Next(1, 3);
+            //int enemy = rgen.Next(1, 3);
 
             switch (enemy)
             {
                 case 1:
                     {
                         //create a bat
-                        Bat rock = new Bat(speedMod);
+                        Bat bat = new Bat(speedMod);
                         // set the image for the game object
-                        rock.Image = rockImg;
+                        bat.Image = rockImg;
+                        bat.Pos = new Rectangle(2000, 300, 40, 30);
                         //add to list
-                        obstacles.Add(rock);
+                        obstacles.Add(bat);
+
+                        // create a second bat
+                        Bat bat2 = new Bat(speedMod);
+                        bat2.Image = rockImg;
+                        obstacles.Add(bat2);
+
                         break;
                     }
                 case 2:
@@ -677,12 +690,22 @@ namespace MoonMiner
                         obstacles.Add(rock);
                         break;
                     }
-                
+                case 3:
+                    {
+                        Spike rock = new Spike(speedMod);
+                        rock.Image = rockImg;
+                        obstacles.Add(rock);
+                        break;
+                    }
+                case 4:
+                    {
+                        Pit rock = new Pit(speedMod);
+                        rock.Image = rockImg;
+                        obstacles.Add(rock);
+                        break;
+                    }
+                                    
             }
-
-            // add the collectible to the list
-
-
         }
 
         public void GemSpawn()

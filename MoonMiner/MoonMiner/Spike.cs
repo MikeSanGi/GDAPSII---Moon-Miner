@@ -12,7 +12,7 @@ namespace MoonMinerExecutable
     {
         public Spike(int mod):base(mod)
         {
-            Speed = 7;
+            Speed = 4;
             Pos = new Rectangle(2000, 300, 10, 100);
         }
     }

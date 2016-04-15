@@ -13,7 +13,7 @@ namespace MoonMinerExecutable
         //constructor
         public Pit(int mod):base(mod)
         {
-            Speed = 7;
+            Speed = 4;
             Pos = new Rectangle(2000, 399, 50, 100);
         }
     }

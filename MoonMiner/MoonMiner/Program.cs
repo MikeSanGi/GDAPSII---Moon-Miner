@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MoonMiner
+namespace MoonMinerExecutable
 {
 #if WINDOWS || LINUX
     /// <summary>
