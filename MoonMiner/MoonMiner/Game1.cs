@@ -60,6 +60,8 @@ namespace MoonMinerExecutable
         int secondCounter;
         int spawnCounter = 0;
         int tenSecondCounter;
+
+        // high score attributes
         StreamReader reader;
         int printedScore1;
         int printedScore2;
@@ -77,6 +79,7 @@ namespace MoonMinerExecutable
 
         // create a list of collectibles
         List<Obstacles> obstacles;
+
         // int for number of obstacles
         int numObstacles;
 
@@ -148,7 +151,7 @@ namespace MoonMinerExecutable
             currState = GameState.MainMenu;
             gkState = Keyboard.GetState();
 
-            //set the obstacles to be active
+           //set the obstacles to be active
            //rocks.Active = true;
            
            //Menu position
@@ -209,12 +212,12 @@ namespace MoonMinerExecutable
 
 
             // TODO: use this.Content to load your game content here
-            background = Content.Load<Texture2D>("Background2");
+            background = Content.Load<Texture2D>("backgroundtest");
             player = Content.Load<Texture2D>("CharSpriteSheet");
             floorImg = Content.Load<Texture2D>("Floor");
             font = Content.Load<SpriteFont>("Arial");
             rockImg = Content.Load<Texture2D>("boxChar");
-            lives = Content.Load<Texture2D>("gem");
+            lives = Content.Load<Texture2D>("TempLife");
             menu = Content.Load<Texture2D>("Main Menu");
             instruct = Content.Load<Texture2D>("Instructions");
             menuSelector = Content.Load<Texture2D>("SelectorTool");
@@ -733,10 +736,7 @@ namespace MoonMinerExecutable
             floor.Speed = speed;
             //reset modifier
             scoreModifier = initialMod;
-            speedMod = speed;
-           
+            speedMod = speed;  
         }
-
-
     }
 }
