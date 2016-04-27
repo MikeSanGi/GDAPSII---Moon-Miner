@@ -774,7 +774,8 @@ namespace MoonMinerExecutable
             floor.Speed = speed;
             //reset modifier
             scoreModifier = initialMod;
-            speedMod = speed;  
+            speedMod = speed;
+            playChar.NumCol = 0;
         }
     }
 }
