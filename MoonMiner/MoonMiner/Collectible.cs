@@ -5,16 +5,19 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace MoonMinerExecutable
 {
     class Collectible:Obstacles
     {
+        private SoundEffect life;
         //constructor
-        public Collectible(int mod):base(mod)
+        public Collectible(int mod, SoundEffect sfx, SoundEffect lf):base(mod, sfx)
         {
             Speed = 6;
             Pos = new Rectangle(2000, 220, 20, 20);
+            life = lf;
         }
 
         public override void CheckCollision(Player plr, Game1 gm)
@@ -25,11 +28,13 @@ namespace MoonMinerExecutable
                 plr.NumCol += 1;
                 Active = false;
                 gm.ScoreNum += 50;
+                SFX.Play();
                 //add a life
                 if(plr.NumCol >= 10)
                 {
                     plr.NumLives += 1;
                     plr.NumCol = 0;
+                    life.Play();
                 }
             }
         } 

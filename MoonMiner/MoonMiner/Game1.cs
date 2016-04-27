@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System.IO;
 using System.Collections.Generic; // needed for Lists
 using System; // needed for RNG
+using Microsoft.Xna.Framework.Audio; //needed for sound
 
 namespace MoonMinerExecutable
 {
@@ -82,6 +83,15 @@ namespace MoonMinerExecutable
 
         // int for number of obstacles
         int numObstacles;
+
+        //variables for sound
+        SoundEffect jump;
+        SoundEffect collect;
+        SoundEffect hit;
+        SoundEffect menuSound;
+        SoundEffect select;
+        SoundEffect lose;
+        SoundEffect life;
 
         //create objects
         FloorObjects wall;
@@ -212,7 +222,7 @@ namespace MoonMinerExecutable
 
 
             // TODO: use this.Content to load your game content here
-            background = Content.Load<Texture2D>("backgroundtest");
+            background = Content.Load<Texture2D>("Background2");
             player = Content.Load<Texture2D>("CharSpriteSheet");
             floorImg = Content.Load<Texture2D>("Floor");
             font = Content.Load<SpriteFont>("Arial");
@@ -227,6 +237,14 @@ namespace MoonMinerExecutable
             highscore = Content.Load<Texture2D>("Highscore");
             gems = Content.Load<Texture2D>("gem");
 
+            //Sounds 
+            jump = Content.Load<SoundEffect>("jump1");
+            menuSound = Content.Load<SoundEffect>("menu");
+            select = Content.Load<SoundEffect>("select");
+            collect = Content.Load<SoundEffect>("collect2");
+            lose = Content.Load<SoundEffect>("lose");
+            hit = Content.Load<SoundEffect>("jump2");
+            life = Content.Load<SoundEffect>("collect");
 
             //load images into floor objects
             wall.Image = background;
@@ -272,27 +290,32 @@ namespace MoonMinerExecutable
                     {
                         selectorPos.X = 360;
                         selectorPos.Y = 275;
+                        menuSound.Play();
                     }
                     if (SingleKeyPress(Keys.Left))
                     {
                         selectorPos.X = 150;
                         selectorPos.Y = 275;
+                        menuSound.Play();
                     }
                     if (SingleKeyPress(Keys.Up))
                     {
                         selectorPos.X = 150;
                         selectorPos.Y = 275;
+                        menuSound.Play();
                     }
                     if (SingleKeyPress(Keys.Down))
                     {
                         selectorPos.X = 310;
                         selectorPos.Y = 367;
+                        menuSound.Play();
                     }
                     if (selectorPos.X == 150)
                     {
                         if (SingleKeyPress(Keys.Enter))
                         {
                             currState = GameState.Game;
+                            select.Play();
                         }
                     }
                     if (selectorPos.X == 310)
@@ -300,6 +323,7 @@ namespace MoonMinerExecutable
                         if (SingleKeyPress(Keys.Enter))
                         {
                             currState = GameState.Highscore;
+                            select.Play();
                         }
                     }
                     if (selectorPos.X == 360)
@@ -307,6 +331,7 @@ namespace MoonMinerExecutable
                         if (SingleKeyPress(Keys.Enter))
                         {
                             currState = GameState.HowToPlay;
+                            select.Play();
                         }
                     }
                         break;
@@ -315,17 +340,20 @@ namespace MoonMinerExecutable
                     {
                         selectorPosInstruct.X = 157;
                         selectorPosInstruct.Y = 390;
+                        menuSound.Play();
                     }
                     if (SingleKeyPress(Keys.Right))
                     {
                         selectorPosInstruct.X = 455;
                         selectorPosInstruct.Y = 390;
+                        menuSound.Play();
                     }
                     if (selectorPosInstruct.X == 157)
                     {
                         if (SingleKeyPress(Keys.Enter))
                         {
                             currState = GameState.MainMenu;
+                            select.Play();
                         }
                     }
                     if (selectorPosInstruct.X == 455)
@@ -333,6 +361,7 @@ namespace MoonMinerExecutable
                         if (SingleKeyPress(Keys.Enter))
                         {
                             currState = GameState.Game;
+                            select.Play();
                         }
                     }
                     break;
@@ -376,6 +405,7 @@ namespace MoonMinerExecutable
                     {
                         // switch to the gameOver state
                         currState = GameState.GameOver;
+                        lose.Play();
                     }
 
                     //Update score based on speed and score modifier, and find new difficulty
@@ -408,6 +438,7 @@ namespace MoonMinerExecutable
                     {
                         // switch the state to Pause
                         currState = GameState.Pause;
+                        select.Play();
                     }
                     break;
                 case GameState.Pause:
@@ -416,6 +447,7 @@ namespace MoonMinerExecutable
                     {
                         // switch the state back to the game
                         currState = GameState.Game;
+                        select.Play();
                     }
                     break;
                 case GameState.GameOver:
@@ -453,17 +485,20 @@ namespace MoonMinerExecutable
                     {
                         selectorPosOver.X = 135;
                         selectorPosOver.Y = 382;
+                        menuSound.Play();
                     }
                     if (SingleKeyPress(Keys.Right))
                     {
                         selectorPosOver.X = 410;
                         selectorPosOver.Y = 382;
+                        menuSound.Play();
                     }
                     if (selectorPosOver.X == 135)
                     {
                         if (SingleKeyPress(Keys.Enter))
                         {
                             currState = GameState.MainMenu;
+                            select.Play();
                             // reset the obstacles
                             Reset();
                         }
@@ -473,6 +508,7 @@ namespace MoonMinerExecutable
                         if (SingleKeyPress(Keys.Enter))
                         {
                             currState = GameState.Game;
+                            select.Play();
                             // reset the obstacles
                             Reset();
                         }
@@ -484,6 +520,7 @@ namespace MoonMinerExecutable
                         if (SingleKeyPress(Keys.Enter))
                         {
                             currState = GameState.MainMenu;
+                            select.Play();
                         }
                     }
                     break;
@@ -606,6 +643,7 @@ namespace MoonMinerExecutable
                 playChar.PosY = 300;
                 playChar.Pos = new Rectangle(playChar.PosX, playChar.PosY,100,100);
                 playChar.PlayerJump = true;
+                jump.Play();
             }
 
             if (playChar.PlayerJump == true)
@@ -672,7 +710,7 @@ namespace MoonMinerExecutable
                 case 1:
                     {
                         //create a bat
-                        Bat bat = new Bat(speedMod);
+                        Bat bat = new Bat(speedMod, hit);
                         // set the image for the game object
                         bat.Image = rockImg;
                         bat.Pos = new Rectangle(2000, 300, 40, 30);
@@ -680,7 +718,7 @@ namespace MoonMinerExecutable
                         obstacles.Add(bat);
 
                         // create a second bat
-                        Bat bat2 = new Bat(speedMod);
+                        Bat bat2 = new Bat(speedMod, hit);
                         bat2.Image = rockImg;
                         obstacles.Add(bat2);
 
@@ -688,21 +726,21 @@ namespace MoonMinerExecutable
                     }
                 case 2:
                     {
-                        Rocks rock = new Rocks(speedMod);
+                        Rocks rock = new Rocks(speedMod, hit);
                         rock.Image = rockImg;
                         obstacles.Add(rock);
                         break;
                     }
                 case 3:
                     {
-                        Spike rock = new Spike(speedMod);
+                        Spike rock = new Spike(speedMod, hit);
                         rock.Image = rockImg;
                         obstacles.Add(rock);
                         break;
                     }
                 case 4:
                     {
-                        Pit rock = new Pit(speedMod);
+                        Pit rock = new Pit(speedMod, hit);
                         rock.Image = rockImg;
                         obstacles.Add(rock);
                         break;
@@ -717,7 +755,7 @@ namespace MoonMinerExecutable
             int chance = rgen.Next(0, 1001);
             if (chance > 900)
             {
-                Collectible gem = new Collectible(speedMod);
+                Collectible gem = new Collectible(speedMod, collect, life);
                 gem.Image = gems;
                 obstacles.Add(gem);
             }

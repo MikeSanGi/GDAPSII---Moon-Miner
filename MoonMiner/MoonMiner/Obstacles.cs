@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace MoonMinerExecutable
 {
@@ -16,6 +17,7 @@ namespace MoonMinerExecutable
         private bool active;
         private int speed;
         private int spMod = 0;
+        private SoundEffect sfx;
 
         //properties
         public bool Active
@@ -24,6 +26,11 @@ namespace MoonMinerExecutable
             set { active = value; }
         }
 
+        public SoundEffect SFX
+        {
+            get { return sfx; }
+            set { sfx = value; }
+        }
         public Texture2D Image
         {
             get { return image; }
@@ -53,12 +60,13 @@ namespace MoonMinerExecutable
         }
 
         //constructor
-        public Obstacles(int mod)
+        public Obstacles(int mod, SoundEffect sound)
         {            
             active = true;
             pos = new Rectangle(2000, 370, 30, 30);
             speed = 5;
             spMod = mod;
+            sfx = sound;
         }
 
         //Movement method
@@ -77,8 +85,9 @@ namespace MoonMinerExecutable
             // check to see if one rectangle intersects the other
             if(plr.Pos.Intersects(Pos) && active == true)
             {
-                plr.NumLives -=1;
+               plr.NumLives -=1;
                 active = false;
+                sfx.Play();
             }
             
         }

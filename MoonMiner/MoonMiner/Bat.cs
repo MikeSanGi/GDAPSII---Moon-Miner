@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace MoonMinerExecutable
 {
@@ -17,7 +18,7 @@ namespace MoonMinerExecutable
         Random rgen;
 
         //constructor
-        public Bat(int mod):base(mod)
+        public Bat(int mod, SoundEffect sfx) :base(mod, sfx)
         {
             seed = seedGen.Next();
             rgen = new Random(seed);
