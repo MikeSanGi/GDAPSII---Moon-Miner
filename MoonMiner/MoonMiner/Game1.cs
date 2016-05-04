@@ -87,6 +87,8 @@ namespace MoonMinerExecutable
         bool highscorePrint = false;
         bool entry = true;
         String newScore;
+        string name;
+        char[] alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         int let1 = 0; int let2 = 0; int let3 = 0;
 
         // create a list of collectibles
