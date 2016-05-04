@@ -12,7 +12,7 @@ namespace MoonMinerExecutable
     /// This is the main type for your game.
     /// </summary>
     /// 
-    enum GameState { MainMenu, HowToPlay, Game, Pause, GameOver, Highscore };
+    enum GameState { MainMenu, HowToPlay, NameEntry, Game, Pause, GameOver, Highscore };
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
@@ -36,6 +36,10 @@ namespace MoonMinerExecutable
         Texture2D highscore;
         Vector2 selectorPosHigh;
         Texture2D gems;
+        Vector2 selectorPosName;
+        Texture2D arrow;
+        Texture2D darrow;
+        Texture2D NameEntry;
 
         // create an enemy variable
         int enemy;
@@ -77,6 +81,9 @@ namespace MoonMinerExecutable
         List<int> highscoreList;
         List<string> highscoreNameList;
         bool highscorePrint = false;
+        bool entry = true;
+        String newScore;
+        int let1 = 0; int let2 = 0; int let3 = 0;
 
         // create a list of collectibles
         List<Obstacles> obstacles;
@@ -236,6 +243,9 @@ namespace MoonMinerExecutable
             battery = Content.Load<Texture2D>("battery");
             highscore = Content.Load<Texture2D>("Highscore");
             gems = Content.Load<Texture2D>("gem");
+            arrow = Content.Load<Texture2D>("Arrow");
+            darrow = Content.Load<Texture2D>("downarrow");
+            NameEntry = Content.Load<Texture2D>("NameEntry");
 
             //Sounds 
             jump = Content.Load<SoundEffect>("jump1");
@@ -360,9 +370,195 @@ namespace MoonMinerExecutable
                     {
                         if (SingleKeyPress(Keys.Enter))
                         {
-                            currState = GameState.Game;
+                            currState = GameState.NameEntry;
                             select.Play();
                         }
+                    }
+                    break;
+                case GameState.NameEntry:
+
+                    //Selector for first letter, upper arrow
+                    if (selectorPosName.X == 225 && selectorPosName.Y == 200)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            if (let1 == 25)
+                            {
+                                let1 = 0;
+                            }
+                            else
+                            {
+                                let1++;
+                            }
+                        }
+                        if (SingleKeyPress(Keys.Right))
+                        {
+                            selectorPosName.X = 325;
+                        }
+                        if (SingleKeyPress(Keys.Down))
+                        {
+                            selectorPosName.Y = 300;
+                        }
+                    }
+
+                    //selector for second letter, upper portion
+                    if (selectorPosName.X == 325 && selectorPosName.Y == 200)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            if (let2 == 25)
+                            {
+                                let2 = 0;
+                            }
+                            else
+                            {
+                                let2++;
+                            }
+                        }
+                        if (SingleKeyPress(Keys.Right))
+                        {
+                            selectorPosName.X = 425;
+                        }
+                        if (SingleKeyPress(Keys.Down))
+                        {
+                            selectorPosName.Y = 300;
+                        }
+                        if (SingleKeyPress(Keys.Left))
+                        {
+                            selectorPosName.X = 225;
+                        }
+                    }
+
+                    //selector for third letter, upper portion
+                    if (selectorPosName.X == 425 && selectorPosName.Y == 200)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            if (let3 == 25)
+                            {
+                                let3 = 0;
+                            }
+                            else
+                            {
+                                let3++;
+                            }
+                        }
+                        if (SingleKeyPress(Keys.Right))
+                        {
+                            selectorPosName.X = 425;
+                        }
+                        if (SingleKeyPress(Keys.Down))
+                        {
+                            selectorPosName.Y = 300;
+                        }
+                        if (SingleKeyPress(Keys.Left))
+                        {
+                            selectorPosName.X = 325;
+                        }
+                    }
+
+                    //selector for third letter, lower portion
+                    if (selectorPosName.X == 425 && selectorPosName.Y == 300)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            if (let3 == 0)
+                            {
+                                let3 = 25;
+                            }
+                            else
+                            {
+                                let3--;
+                            }
+                        }
+                        if (SingleKeyPress(Keys.Left))
+                        {
+                            selectorPosName.X = 325;
+                        }
+                        if (SingleKeyPress(Keys.Up))
+                        {
+                            selectorPosName.Y = 200;
+                        }
+                        if (SingleKeyPress(Keys.Down))
+                        {
+                            selectorPosName.Y = 400;
+                        }
+                    }
+
+                    //selector for second letter, lower potion
+                    if (selectorPosName.X == 325 && selectorPosName.Y == 300)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            if (let2 == 0)
+                            {
+                                let2 = 25;
+                            }
+                            else
+                            {
+                                let2--;
+                            }
+                        }
+                        if (SingleKeyPress(Keys.Left))
+                        {
+                            selectorPosName.X = 225;
+                        }
+                        if (SingleKeyPress(Keys.Up))
+                        {
+                            selectorPosName.Y = 200;
+                        }
+                        if (SingleKeyPress(Keys.Down))
+                        {
+                            selectorPosName.Y = 400;
+                        }
+                        if (SingleKeyPress(Keys.Right))
+                        {
+                            selectorPosName.X = 425;
+                        }
+                    }
+
+                    //selector for first letter, lower portion
+                    if (selectorPosName.X == 225 && selectorPosName.Y == 300)
+                    {
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            if (let1 == 0)
+                            {
+                                let1 = 25;
+                            }
+                            else
+                            {
+                                let1--;
+                            }
+                        }
+                        if (SingleKeyPress(Keys.Up))
+                        {
+                            selectorPosName.Y = 200;
+                        }
+                        if (SingleKeyPress(Keys.Down))
+                        {
+                            selectorPosName.Y = 400;
+                        }
+                        if (SingleKeyPress(Keys.Right))
+                        {
+                            selectorPosName.X = 325;
+                        }
+                    }
+
+                    //proceed selection, saves name
+                    if (selectorPosName.Y == 400)
+                    {
+                        if(SingleKeyPress(Keys.Up))
+                        {
+                            selectorPosName.Y = 300;
+                            selectorPosName.X = 425;
+                        }
+                        if (SingleKeyPress(Keys.Enter))
+                        {
+                            name = (alphabet[let1].ToString()) + (alphabet[let2].ToString()) + (alphabet[let3].ToString());
+                            currState = GameState.Game;
+                        }
+
                     }
                     break;
                 case GameState.Game:
@@ -554,6 +750,27 @@ namespace MoonMinerExecutable
                     spriteBatch.Draw(instruct, menuPos, Color.White);
                     spriteBatch.Draw(menuSelector, selectorPosInstruct, Color.White);
                     break;
+                case GameState.NameEntry:
+                    spriteBatch.Draw(NameEntry, menuPos, Color.White);
+
+                    //Draws selection for first initial in Highscore entry
+                    spriteBatch.Draw(arrow, new Rectangle(275, 200, 30, 30), Color.White);
+                    spriteBatch.DrawString(font, alphabet[let1].ToString(), new Vector2(280, 250), Color.White);
+                    spriteBatch.Draw(darrow, new Rectangle(275, 300, 30, 30), Color.White);
+
+                    //Draws selection for second initial in Highscore entry
+                    spriteBatch.Draw(arrow, new Rectangle(375, 200, 30, 30), Color.White);
+                    spriteBatch.DrawString(font, alphabet[let2].ToString(), new Vector2(380, 250), Color.White);
+                    spriteBatch.Draw(darrow, new Rectangle(375, 300, 30, 30), Color.White);
+
+                    //Draws selection for third initial in Highscore entry
+                    spriteBatch.Draw(arrow, new Rectangle(475, 200, 30, 30), Color.White);
+                    spriteBatch.DrawString(font, alphabet[let3].ToString(), new Vector2(480, 250), Color.White);
+                    spriteBatch.Draw(darrow, new Rectangle(475, 300, 30, 30), Color.White);
+
+                    spriteBatch.Draw(menuSelector, selectorPosName, Color.White);
+
+                    break;
                 case GameState.Game:
                     wall.Draw(spriteBatch);
                     playChar.Draw(spriteBatch);
@@ -578,6 +795,9 @@ namespace MoonMinerExecutable
                     spriteBatch.Draw(battery, new Vector2(12, 417), Color.Black);
                     spriteBatch.Draw(battery, new Vector2(10, 415), Color.White);
                     
+                    //draws current players name
+                    spriteBatch.DrawString(font, name, new Vector2(300, 10), Color.White);
+                      
                     //draw lives
                     for (int i = 0; i < playChar.NumLives; i++)
                     {
@@ -689,6 +909,7 @@ namespace MoonMinerExecutable
             gkState = Keyboard.GetState();
             if (gkState.IsKeyDown(key) && gkStatePrev.IsKeyUp(key))
             {
+                gkStateprev = gkState;
                 return true;
             }
             else
