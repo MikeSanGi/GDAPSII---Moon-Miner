@@ -36,8 +36,7 @@ namespace MoonMinerExecutable
         const int CART_Y = 0;
         const int CART_HEIGHT = 100;
         const int CART_WIDTH = 100;
-        const int CART_X_OFFSET = 0;
-
+        
         //animation method
         public void Animate(GameTime gameTime)
         {
@@ -136,11 +135,11 @@ namespace MoonMinerExecutable
         {
             if (Duck == false)
             {
-                spriteBatch.Draw(image, Pos, new Rectangle(CART_X_OFFSET + frame * CART_WIDTH, CART_Y, CART_WIDTH, CART_HEIGHT), Color.White);
+                spriteBatch.Draw(image, Pos, new Rectangle(frame * CART_WIDTH, CART_Y, CART_WIDTH, CART_HEIGHT), Color.White);
             }                 
             else
             {
-                spriteBatch.Draw(image, Pos, new Rectangle(CART_X_OFFSET + frame * CART_WIDTH, CART_Y, CART_WIDTH, CART_HEIGHT/2), Color.White);
+                spriteBatch.Draw(image, Pos, new Rectangle(frame * CART_WIDTH, CART_Y, CART_WIDTH, CART_HEIGHT/2), Color.White);
             }
         }
     }

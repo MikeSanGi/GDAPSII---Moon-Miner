@@ -19,6 +19,15 @@ namespace MoonMinerExecutable
         private int spMod = 0;
         private SoundEffect sfx;
 
+        //animation attributes
+        private int frame;
+        private double timePerFrame = 50;
+        private int numFrames = 3;
+        private int framesElapsed;
+        private int yVal = 0;
+        private int height = 100;
+        private int width = 100;        
+             
         //properties
         public bool Active
         {
@@ -59,6 +68,23 @@ namespace MoonMinerExecutable
             set { pos.Y = value; }
         }
 
+        //animation properties
+        public int NumFrames
+        {
+            get { return numFrames; }
+            set { numFrames = value; }
+        }
+        public int Width
+        {
+            get { return width; }
+            set { width = value; }
+        }
+        public int Height
+        {
+            get { return height; }
+            set { height = value; }
+        }
+
         //constructor
         public Obstacles(int mod, SoundEffect sound)
         {            
@@ -92,13 +118,19 @@ namespace MoonMinerExecutable
             
         }
 
+        //animation method
+        public void Animate(GameTime gameTime)
+        {
+            framesElapsed = (int)(gameTime.TotalGameTime.TotalMilliseconds / timePerFrame);
+            frame = framesElapsed % numFrames;
+        }
+
         //draw method
         public void Draw(SpriteBatch spriteBatch)
         {
             if(active == true)
             {
-                spriteBatch.Draw(Image, new Rectangle(pos.X,pos.Y,50,50), Color.White);
-                spriteBatch.Draw(Image, new Vector2(500, 500), Color.White);
+                spriteBatch.Draw(image, Pos, new Rectangle(frame * width, yVal, width, height), Color.White);
             }
         }
     }

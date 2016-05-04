@@ -16,8 +16,11 @@ namespace MoonMinerExecutable
         public Collectible(int mod, SoundEffect sfx, SoundEffect lf):base(mod, sfx)
         {
             Speed = 6;
-            Pos = new Rectangle(2000, 220, 20, 20);
+            Pos = new Rectangle(2000, 220, 30, 22);
             life = lf;
+            Height = 22;
+            Width = 30;
+            NumFrames = 3;
         }
 
         public override void CheckCollision(Player plr, Game1 gm)

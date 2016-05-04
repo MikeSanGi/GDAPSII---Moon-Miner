@@ -25,6 +25,10 @@ namespace MoonMinerExecutable
             posY = rgen.Next(100, 400);
             Speed = 4;
             Pos = new Rectangle(2000, posY, 40, 30);
+            //animation
+            Height = 30;
+            Width = 40;
+            NumFrames = 3;
         }
     }
 }

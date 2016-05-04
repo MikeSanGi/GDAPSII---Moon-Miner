@@ -36,6 +36,7 @@ namespace MoonMinerExecutable
         Texture2D highscore;
         Vector2 selectorPosHigh;
         Texture2D gems;
+        Texture2D batSS;
 
         // create an enemy variable
         int enemy;
@@ -235,7 +236,8 @@ namespace MoonMinerExecutable
             gameover = Content.Load<Texture2D>("GameOver");
             battery = Content.Load<Texture2D>("battery");
             highscore = Content.Load<Texture2D>("Highscore");
-            gems = Content.Load<Texture2D>("gem");
+            gems = Content.Load<Texture2D>("gemSpriteSheet");
+            batSS = Content.Load<Texture2D>("batSpriteSheets");
 
             //Sounds 
             jump = Content.Load<SoundEffect>("jump1");
@@ -279,6 +281,10 @@ namespace MoonMinerExecutable
 
             //time for Animation
             playChar.Animate(gameTime);
+            foreach(Obstacles ob in obstacles)
+            {
+                ob.Animate(gameTime);
+            }
 
            
 
@@ -566,7 +572,7 @@ namespace MoonMinerExecutable
                     {
                         if (rock.Active)
                         {
-                            spriteBatch.Draw(rock.Image, rock.Pos, Color.White);
+                            rock.Draw(spriteBatch);
                         }
                     }
 
@@ -712,14 +718,14 @@ namespace MoonMinerExecutable
                         //create a bat
                         Bat bat = new Bat(speedMod, hit);
                         // set the image for the game object
-                        bat.Image = rockImg;
+                        bat.Image = batSS;
                         bat.Pos = new Rectangle(2000, 300, 40, 30);
                         //add to list
                         obstacles.Add(bat);
 
                         // create a second bat
                         Bat bat2 = new Bat(speedMod, hit);
-                        bat2.Image = rockImg;
+                        bat2.Image = batSS;
                         obstacles.Add(bat2);
 
                         break;
