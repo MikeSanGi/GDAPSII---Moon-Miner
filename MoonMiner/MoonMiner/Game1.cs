@@ -36,14 +36,10 @@ namespace MoonMinerExecutable
         Texture2D highscore;
         Vector2 selectorPosHigh;
         Texture2D gems;
-<<<<<<< HEAD
-        Texture2D batSS;
-=======
         Vector2 selectorPosName;
         Texture2D arrow;
         Texture2D darrow;
         Texture2D NameEntry;
->>>>>>> 8d0fc09ac97391b499f86ccb4f77280fe5c96fef
 
         // create an enemy variable
         int enemy;
@@ -66,30 +62,22 @@ namespace MoonMinerExecutable
         string highscoreName;
         double obstacleFrequency = 1;
         bool difficultyUp = false;
+        bool saveOnce = false;
         int secondCounter;
         int spawnCounter = 0;
         int tenSecondCounter;
 
         // high score attributes
         StreamReader reader;
-        int printedScore1;
-        int printedScore2;
-        int printedScore3;
-        int printedScore4;
-        int printedScore5;
-        int printedScore6;
-        int printedScore7;
-        int printedScore8;
 
         //Highscore
-        List<int> highscoreList;
-        List<string> highscoreNameList;
         bool highscorePrint = false;
         bool entry = true;
         String newScore;
         string name;
         char[] alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         int let1 = 0; int let2 = 0; int let3 = 0;
+        ScoreLinkedList sll = new ScoreLinkedList();
 
         // create a list of collectibles
         List<Obstacles> obstacles;
@@ -152,6 +140,21 @@ namespace MoonMinerExecutable
                 speed = 4;
                 scoreModifier = 0.5; 
             }
+
+
+                StreamReader sr = new StreamReader("highscore.txt");
+                StreamReader nr = new StreamReader("highscoreNames.txt");
+                string nameIn;
+                int scoreIn;
+                while((nameIn = nr.ReadLine()) != null)
+                {
+                    string scoreStr = sr.ReadLine();
+                    int.TryParse(scoreStr, out scoreIn);
+                    sll.Add(nameIn, scoreIn);
+                }
+            nr.Close();
+            sr.Close();
+
             speedMod = speed;
             initialSpeed = speed;
             initialMod = scoreModifier;
@@ -191,38 +194,6 @@ namespace MoonMinerExecutable
             selectorPosName.X = 225;
             selectorPosName.Y = 200;
 
-            //Highscore list
-            highscoreList = new List<int>();
-            highscoreList.Add(0);
-            highscoreList.Add(0);
-            highscoreList.Add(0);
-            highscoreList.Add(0);
-            highscoreList.Add(0);
-            highscoreList.Add(0);
-            highscoreList.Add(0);
-            highscoreList.Add(0);
-
-            try
-            {
-                using (var reader = new StreamReader("highscore.txt"))
-                {
-                    string line;
-                    int convertedLine;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        convertedLine = Convert.ToInt32(line);
-                        highscoreList.Add(convertedLine);
-                    }
-                }
-                reader.Close();
-                highscoreNameList = new List<string>();
-    
-            }
-            catch (Exception)
-            {
-                
-            }
-
             base.Initialize();
         }
 
@@ -250,15 +221,10 @@ namespace MoonMinerExecutable
             gameover = Content.Load<Texture2D>("GameOver");
             battery = Content.Load<Texture2D>("battery");
             highscore = Content.Load<Texture2D>("Highscore");
-<<<<<<< HEAD
-            gems = Content.Load<Texture2D>("gemSpriteSheet");
-            batSS = Content.Load<Texture2D>("batSpriteSheets");
-=======
             gems = Content.Load<Texture2D>("gem");
             arrow = Content.Load<Texture2D>("Arrow");
             darrow = Content.Load<Texture2D>("downarrow");
             NameEntry = Content.Load<Texture2D>("NameEntry");
->>>>>>> 8d0fc09ac97391b499f86ccb4f77280fe5c96fef
 
             //Sounds 
             jump = Content.Load<SoundEffect>("jump1");
@@ -302,10 +268,6 @@ namespace MoonMinerExecutable
 
             //time for Animation
             playChar.Animate(gameTime);
-            foreach(Obstacles ob in obstacles)
-            {
-                ob.Animate(gameTime);
-            }
 
            
 
@@ -341,7 +303,7 @@ namespace MoonMinerExecutable
                     {
                         if (SingleKeyPress(Keys.Enter))
                         {
-                            currState = GameState.Game;
+                            currState = GameState.NameEntry;
                             select.Play();
                         }
                     }
@@ -579,7 +541,6 @@ namespace MoonMinerExecutable
                     }
                     break;
                 case GameState.Game:
-                highscorePrint = false;
                     //call floorobject movement
                     wall.MoveFloor();
                     floor.MoveFloor();
@@ -664,36 +625,7 @@ namespace MoonMinerExecutable
                     }
                     break;
                 case GameState.GameOver:
-                if (highscorePrint == false)
-                    {
-                        for (int i = 0; i < highscoreList.Count; i++)
-                        {
-                            if (scoreNum > highscoreList.IndexOf(i)) 
-                            {
-                                highscoreList.Insert(i, scoreNum);
-                                break;
-                            }
-                        }
-                        highscoreList.Sort();
-                        highscorePrint = true;
-
-                        StreamWriter output = new StreamWriter("highscore.txt");
-                        foreach (int element in highscoreList)
-                        {
-                            output.WriteLine(element);
-                        }
-                        output.Close();
-
-                    printedScore1 = highscoreList[highscoreList.Count - 1];
-                    printedScore2 = highscoreList[highscoreList.Count - 2];
-                    printedScore3 = highscoreList[highscoreList.Count - 3];
-                    printedScore4 = highscoreList[highscoreList.Count - 4];
-                    printedScore5 = highscoreList[highscoreList.Count - 5];
-                    printedScore6 = highscoreList[highscoreList.Count - 6];
-                    printedScore7 = highscoreList[highscoreList.Count - 7];
-                    printedScore8 = highscoreList[highscoreList.Count - 8];
-
-                    }
+                 
                     if (SingleKeyPress(Keys.Left))
                     {
                         selectorPosOver.X = 135;
@@ -800,7 +732,7 @@ namespace MoonMinerExecutable
                     {
                         if (rock.Active)
                         {
-                            rock.Draw(spriteBatch);
+                            spriteBatch.Draw(rock.Image, rock.Pos, Color.White);
                         }
                     }
 
@@ -811,9 +743,10 @@ namespace MoonMinerExecutable
                     //draws Battery to house lives
                     spriteBatch.Draw(battery, new Vector2(12, 417), Color.Black);
                     spriteBatch.Draw(battery, new Vector2(10, 415), Color.White);
-                    
+
                     //draws current players name
-                    spriteBatch.DrawString(font, name, new Vector2(300, 10), Color.White);
+                    spriteBatch.DrawString(font, name, new Vector2(502, 12), Color.Black);
+                    spriteBatch.DrawString(font, name, new Vector2(500, 10), Color.White);
                       
                     //draw lives
                     for (int i = 0; i < playChar.NumLives; i++)
@@ -825,6 +758,14 @@ namespace MoonMinerExecutable
                     spriteBatch.Draw(pause, menuPos, Color.White);
                     break;
                 case GameState.GameOver:
+                    if (!saveOnce)
+                    {
+                        sll.Add(name, scoreNum);
+                        sll.SaveScores();
+                        sll.SaveNames();
+                        saveOnce = true;
+                    }
+
                     spriteBatch.Draw(gameover, menuPos, Color.White);
                     spriteBatch.DrawString(font, "Final Score: " + scoreNum, new Vector2(302, 252), Color.Black);
                     spriteBatch.DrawString(font, "Final Score: " + scoreNum, new Vector2(300, 250), Color.White);
@@ -832,22 +773,9 @@ namespace MoonMinerExecutable
                     break;
                 case GameState.Highscore:
                     spriteBatch.Draw(highscore, menuPos, Color.White);
-                    spriteBatch.DrawString(font, "1: " + printedScore1, new Vector2(202, 212), Color.Black);
-                    spriteBatch.DrawString(font, "1: " + printedScore1, new Vector2(200, 210), Color.White);
-                    spriteBatch.DrawString(font, "2: " + printedScore2, new Vector2(202, 242), Color.Black);
-                    spriteBatch.DrawString(font, "2: " + printedScore2, new Vector2(200, 240), Color.White);
-                    spriteBatch.DrawString(font, "3: " + printedScore3, new Vector2(202, 272), Color.Black);
-                    spriteBatch.DrawString(font, "3: " + printedScore3, new Vector2(200, 270), Color.White);
-                    spriteBatch.DrawString(font, "4: " + printedScore4, new Vector2(202, 302), Color.Black);
-                    spriteBatch.DrawString(font, "4: " + printedScore4, new Vector2(200, 300), Color.White);
-                    spriteBatch.DrawString(font, "5: " + printedScore5, new Vector2(452, 212), Color.Black);
-                    spriteBatch.DrawString(font, "5: " + printedScore5, new Vector2(450, 210), Color.White);
-                    spriteBatch.DrawString(font, "6: " + printedScore6, new Vector2(452, 242), Color.Black);
-                    spriteBatch.DrawString(font, "6: " + printedScore6, new Vector2(450, 240), Color.White);
-                    spriteBatch.DrawString(font, "7: " + printedScore7, new Vector2(452, 272), Color.Black);
-                    spriteBatch.DrawString(font, "7: " + printedScore7, new Vector2(450, 270), Color.White);
-                    spriteBatch.DrawString(font, "8: " + printedScore8, new Vector2(452, 302), Color.Black);
-                    spriteBatch.DrawString(font, "8: " + printedScore8, new Vector2(450, 300), Color.White);
+                    spriteBatch.DrawString(font, sll.PrintList(), new Vector2(204, 214), Color.Black);
+                    spriteBatch.DrawString(font, sll.PrintList(), new Vector2(202, 212), Color.White);
+
                     spriteBatch.Draw(menuSelector, selectorPosHigh, Color.White);
                     break;
             }
@@ -926,7 +854,7 @@ namespace MoonMinerExecutable
             gkState = Keyboard.GetState();
             if (gkState.IsKeyDown(key) && gkStatePrev.IsKeyUp(key))
             {
-                gkStateprev = gkState;
+                gkStatePrev = gkState;
                 return true;
             }
             else
@@ -950,14 +878,14 @@ namespace MoonMinerExecutable
                         //create a bat
                         Bat bat = new Bat(speedMod, hit);
                         // set the image for the game object
-                        bat.Image = batSS;
+                        bat.Image = rockImg;
                         bat.Pos = new Rectangle(2000, 300, 40, 30);
                         //add to list
                         obstacles.Add(bat);
 
                         // create a second bat
                         Bat bat2 = new Bat(speedMod, hit);
-                        bat2.Image = batSS;
+                        bat2.Image = rockImg;
                         obstacles.Add(bat2);
 
                         break;
@@ -1014,6 +942,7 @@ namespace MoonMinerExecutable
             scoreModifier = initialMod;
             speedMod = speed;
             playChar.NumCol = 0;
+            saveOnce = false;
         }
     }
 }
