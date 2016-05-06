@@ -41,6 +41,11 @@ namespace MoonMinerExecutable
         Texture2D darrow;
         Texture2D NameEntry;
 
+        Texture2D spikes;
+        Texture2D pits;
+        Texture2D batSS;
+        Texture2D rox;
+
         // create an enemy variable
         int enemy;
 
@@ -212,7 +217,7 @@ namespace MoonMinerExecutable
             player = Content.Load<Texture2D>("CharSpriteSheet");
             floorImg = Content.Load<Texture2D>("Floor");
             font = Content.Load<SpriteFont>("Arial");
-            rockImg = Content.Load<Texture2D>("boxChar");
+            rockImg = Content.Load<Texture2D>("rockSS");
             lives = Content.Load<Texture2D>("TempLife");
             menu = Content.Load<Texture2D>("Main Menu");
             instruct = Content.Load<Texture2D>("Instructions");
@@ -221,10 +226,14 @@ namespace MoonMinerExecutable
             gameover = Content.Load<Texture2D>("GameOver");
             battery = Content.Load<Texture2D>("battery");
             highscore = Content.Load<Texture2D>("Highscore");
-            gems = Content.Load<Texture2D>("gem");
+            gems = Content.Load<Texture2D>("gemSpriteSheet");
             arrow = Content.Load<Texture2D>("Arrow");
             darrow = Content.Load<Texture2D>("downarrow");
             NameEntry = Content.Load<Texture2D>("NameEntry");
+
+            pits = Content.Load<Texture2D>("Pit");
+            spikes = Content.Load<Texture2D>("Spike");
+            batSS = Content.Load<Texture2D>("batSpriteSheets");
 
             //Sounds 
             jump = Content.Load<SoundEffect>("jump1");
@@ -565,6 +574,7 @@ namespace MoonMinerExecutable
                     foreach(Obstacles stuff in obstacles)
                     {
                         stuff.Move();
+                        stuff.Animate(gameTime);
                     }
 
                    
@@ -732,7 +742,7 @@ namespace MoonMinerExecutable
                     {
                         if (rock.Active)
                         {
-                            spriteBatch.Draw(rock.Image, rock.Pos, Color.White);
+                            rock.Draw(spriteBatch);
                         }
                     }
 
@@ -878,14 +888,14 @@ namespace MoonMinerExecutable
                         //create a bat
                         Bat bat = new Bat(speedMod, hit);
                         // set the image for the game object
-                        bat.Image = rockImg;
+                        bat.Image = batSS;
                         bat.Pos = new Rectangle(2000, 300, 40, 30);
                         //add to list
                         obstacles.Add(bat);
 
                         // create a second bat
                         Bat bat2 = new Bat(speedMod, hit);
-                        bat2.Image = rockImg;
+                        bat2.Image = batSS;
                         obstacles.Add(bat2);
 
                         break;
@@ -900,14 +910,14 @@ namespace MoonMinerExecutable
                 case 3:
                     {
                         Spike rock = new Spike(speedMod, hit);
-                        rock.Image = rockImg;
+                        rock.Image = spikes;
                         obstacles.Add(rock);
                         break;
                     }
                 case 4:
                     {
                         Pit rock = new Pit(speedMod, hit);
-                        rock.Image = rockImg;
+                        rock.Image = pits;
                         obstacles.Add(rock);
                         break;
                     }
