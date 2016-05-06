@@ -28,7 +28,7 @@ namespace MoonMinerExecutable
             //animation
             Height = 30;
             Width = 40;
-            NumFrames = 3;
+            NumFrames = 4;
         }
     }
 }
