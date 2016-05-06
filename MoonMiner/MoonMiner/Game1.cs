@@ -188,6 +188,8 @@ namespace MoonMinerExecutable
             selectorPosOver.Y = 382;
             selectorPosHigh.X = 135;
             selectorPosHigh.Y = 382;
+            selectorPosName.X = 225;
+            selectorPosName.Y = 200;
 
             //Highscore list
             highscoreList = new List<int>();
