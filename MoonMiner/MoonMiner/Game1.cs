@@ -469,7 +469,8 @@ namespace MoonMinerExecutable
                         }
                         if (SingleKeyPress(Keys.Down))
                         {
-                            selectorPosName.Y = 400;
+                            selectorPosName.Y = 375;
+                            selectorPosName.X = 325;
                         }
                     }
 
@@ -497,7 +498,8 @@ namespace MoonMinerExecutable
                         }
                         if (SingleKeyPress(Keys.Down))
                         {
-                            selectorPosName.Y = 400;
+                             selectorPosName.Y = 375;
+                            selectorPosName.X = 325;
                         }
                         if (SingleKeyPress(Keys.Right))
                         {
@@ -525,7 +527,8 @@ namespace MoonMinerExecutable
                         }
                         if (SingleKeyPress(Keys.Down))
                         {
-                            selectorPosName.Y = 400;
+                             selectorPosName.Y = 375;
+                            selectorPosName.X = 325;
                         }
                         if (SingleKeyPress(Keys.Right))
                         {
@@ -534,7 +537,7 @@ namespace MoonMinerExecutable
                     }
 
                     //proceed selection, saves name
-                    if (selectorPosName.Y == 400)
+                    if (selectorPosName.Y == 375)
                     {
                         if(SingleKeyPress(Keys.Up))
                         {
@@ -759,9 +762,16 @@ namespace MoonMinerExecutable
                     spriteBatch.DrawString(font, name, new Vector2(500, 10), Color.White);
                       
                     //draw lives
-                    for (int i = 0; i < playChar.NumLives; i++)
+                   for (int i = 0; i < playChar.NumLives; i++)
                     {
-                        spriteBatch.Draw(lives, new Vector2(19 + ((i * 35)), 425), Color.White);
+                        if(playChar.NumLives == 3)
+                        spriteBatch.Draw(lives, new Vector2(19 + ((i * 35)), 425), Color.LimeGreen);
+
+                        if (playChar.NumLives == 2)
+                            spriteBatch.Draw(lives, new Vector2(19 + ((i * 35)), 425), Color.Yellow);
+
+                        if (playChar.NumLives == 1)
+                            spriteBatch.Draw(lives, new Vector2(19 + ((i * 35)), 425), Color.Red);
                     }
                     break;
                 case GameState.Pause:
