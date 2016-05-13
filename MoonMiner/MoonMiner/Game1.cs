@@ -89,6 +89,7 @@ namespace MoonMinerExecutable
 
         // int for number of obstacles
         int numObstacles;
+        int gracePeriod;
 
         //variables for sound
         SoundEffect jump;
@@ -175,8 +176,8 @@ namespace MoonMinerExecutable
             //rocks = new Obstacles(new Rectangle(500,500,30,30));
             obstacles = new List<Obstacles>();
 
-            // set the number of obstacles
-            numObstacles = 10;
+            // set the gracePeriod
+            gracePeriod = 0;
 
             // set the initial game state
             currState = GameState.MainMenu;
@@ -566,15 +567,21 @@ namespace MoonMinerExecutable
                     {
                         spawnCounter = 0;
                     }
-
                     if (spawnCounter == 50-speedMod)
                     {
+                        gracePeriod++;
                         ObstacleSpawn();
                         GemSpawn();
                     }
-                    
 
-                    foreach(Obstacles stuff in obstacles)
+                    if (gracePeriod >= 10)
+                    {
+                        gracePeriod = 0;
+                        difficultyUp = true;
+                        spawnCounter = -50;
+                    }
+
+                        foreach (Obstacles stuff in obstacles)
                     {
                         stuff.Move();
                         stuff.Animate(gameTime);
@@ -603,11 +610,6 @@ namespace MoonMinerExecutable
                         secondCounter = 0;
                         scoreNum = Convert.ToInt32(scoreNum + speed * scoreModifier);
                         tenSecondCounter++;
-                    }
-                    if (tenSecondCounter >= 600)
-                    {
-                        tenSecondCounter = 0;
-                        difficultyUp = true;
                     }
                     if (difficultyUp == true)
                     {
@@ -758,8 +760,8 @@ namespace MoonMinerExecutable
                     spriteBatch.Draw(battery, new Vector2(10, 415), Color.White);
 
                     //draws current players name
-                    spriteBatch.DrawString(font, name, new Vector2(502, 12), Color.Black);
-                    spriteBatch.DrawString(font, name, new Vector2(500, 10), Color.White);
+                    spriteBatch.DrawString(font, name, new Vector2(702, 12), Color.Black);
+                    spriteBatch.DrawString(font, name, new Vector2(700, 10), Color.White);
                       
                     //draw lives
                    for (int i = 0; i < playChar.NumLives; i++)
@@ -900,12 +902,14 @@ namespace MoonMinerExecutable
                         // set the image for the game object
                         bat.Image = batSS;
                         bat.Pos = new Rectangle(2000, 300, 40, 30);
+                        bat.ObjColor = Color.HotPink;
                         //add to list
                         obstacles.Add(bat);
 
                         // create a second bat
                         Bat bat2 = new Bat(speedMod, hit);
                         bat2.Image = batSS;
+                        bat2.ObjColor = Color.HotPink;
                         obstacles.Add(bat2);
 
                         break;
@@ -921,6 +925,7 @@ namespace MoonMinerExecutable
                     {
                         Spike rock = new Spike(speedMod, hit);
                         rock.Image = spikes;
+                        rock.ObjColor = Color.Red;
                         obstacles.Add(rock);
                         break;
                     }
